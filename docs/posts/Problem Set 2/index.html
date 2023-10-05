@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Annika G. Lee">
+<meta name="dcterms.date" content="2023-09-17">
+
+<title>Annika G. Lee - Data Mining: Problem Set 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/personal_logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Annika G. Lee</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../resume.html" rel="" target="">
+ <span class="menu-text">Resume</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#step-1" id="toc-step-1" class="nav-link active" data-scroll-target="#step-1">Step 1</a></li>
+  <li><a href="#step-2" id="toc-step-2" class="nav-link" data-scroll-target="#step-2">Step 2</a></li>
+  <li><a href="#step-3" id="toc-step-3" class="nav-link" data-scroll-target="#step-3">Step 3</a></li>
+  <li><a href="#step-5" id="toc-step-5" class="nav-link" data-scroll-target="#step-5">Step 5</a></li>
+  <li><a href="#step-6" id="toc-step-6" class="nav-link" data-scroll-target="#step-6">Step 6</a></li>
+  <li><a href="#step-7" id="toc-step-7" class="nav-link" data-scroll-target="#step-7">Step 7</a></li>
+  <li><a href="#step-8" id="toc-step-8" class="nav-link" data-scroll-target="#step-8">Step 8</a></li>
+  <li><a href="#step-9" id="toc-step-9" class="nav-link" data-scroll-target="#step-9">Step 9</a></li>
+  <li><a href="#step-10" id="toc-step-10" class="nav-link" data-scroll-target="#step-10">Step 10</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data Mining: Problem Set 2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Annika G. Lee </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 17, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="step-1" class="level2">
+<h2 class="anchored" data-anchor-id="step-1">Step 1</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 731
+Columns: 10
+$ date        &lt;date&gt; 2011-01-01, 2011-01-02, 2011-01-03, 2011-01-04, 2011-01-0…
+$ season      &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ holiday     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0…
+$ weekday     &lt;dbl&gt; 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4…
+$ weather     &lt;dbl&gt; 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2…
+$ temperature &lt;dbl&gt; 46.71653, 48.35024, 34.21239, 34.52000, 36.80056, 34.88784…
+$ realfeel    &lt;dbl&gt; 46.39865, 45.22419, 25.70131, 28.40009, 30.43728, NA, 28.0…
+$ humidity    &lt;dbl&gt; 0.805833, 0.696087, 0.437273, 0.590435, 0.436957, 0.518261…
+$ windspeed   &lt;dbl&gt; 6.679665, 10.347140, 10.337565, 6.673420, 7.780994, 3.7287…
+$ rentals     &lt;dbl&gt; 985, 801, 1349, 1562, 1600, 1606, 1510, 959, 822, 1321, 12…</code></pre>
+</div>
+</div>
+</section>
+<section id="step-2" class="level2">
+<h2 class="anchored" data-anchor-id="step-2">Step 2</h2>
+<p>When looking at our data that has been marked as numeric data types, there are a few variables that are not truly represented as numeric. These variables are <code>season</code>, <code>holiday</code>, <code>weekday</code> and <code>weather</code>. For example, the table below represents the numbers of observations for the variable <code>season</code>, for the total of observations within each month and season is shown. The numbers are better off added up to see the total observations within each category, not to compare the results and summmaries of each.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      month
+season  1  2  3  4  5  6  7  8  9 10 11 12
+     1 62 57 40  0  0  0  0  0  0  0  0 22
+     2  0  0 22 60 62 40  0  0  0  0  0  0
+     3  0  0  0  0  0 20 62 62 44  0  0  0
+     4  0  0  0  0  0  0  0  0 16 62 60 40</code></pre>
+</div>
+</div>
+<p>From the table above, we can turn these variables into factors and get even more specific with <code>season</code> by specifying which season such as <em>Winter</em>, <em>Spring</em>, <em>Summer</em> and <em>Fall</em> is assigned to which number. I have assigned the seasons as, <code>Winter = 1</code>, <code>Spring - 2</code>, <code>Summer = 3</code> and <code>Fall = 4</code>, for the table helps create the assumptions on which numbers would best fit with specific months and seasons. The variables of <code>holiday</code>, <code>weekday</code> and <code>weather</code> are currently numeric but better off represented as categorical data. These values represents a specific answer and are known as nominal data types. When it comes to <code>holiday</code> we can see that the numbers of <em>0</em> and <em>1</em> indicates that the data is either considered a holiday or not, so creating two groups for those numbers were easy to replace and specify. Now for <code>weekday</code>, changing the the numeric values into the days of the week such as: <code>Sunday = 0</code>, <code>Monday = 1</code>, <code>Tuesday - 2</code>, <code>Wednesday = 3</code>, <code>Thursday = 4</code>, <code>Friday = 5</code> and <code>Saturday = 6</code>, will help indicate specific days that rentals took place throughout the week.</p>
+</section>
+<section id="step-3" class="level2">
+<h2 class="anchored" data-anchor-id="step-3">Step 3</h2>
+<p>Now that we’ve got everything properly recognized as numeric or factor, we can use <code>summary()</code> to look at some basic statistics and also scout out missing values. To make things easier to read, we’ll divide summaries by numeric and factor data types.</p>
+<p>This data is showcasing our numeric values.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>  temperature       realfeel         humidity        windspeed      
+ Min.   :22.60   Min.   : 12.59   Min.   :0.0000   Min.   : 0.9322  
+ 1st Qu.:46.12   1st Qu.: 43.38   1st Qu.:0.5200   1st Qu.: 5.6182  
+ Median :59.76   Median : 61.25   Median :0.6267   Median : 7.5343  
+ Mean   :59.51   Mean   : 59.60   Mean   :0.6279   Mean   : 7.9303  
+ 3rd Qu.:73.05   3rd Qu.: 75.43   3rd Qu.:0.7302   3rd Qu.: 9.7092  
+ Max.   :90.50   Max.   :103.10   Max.   :0.9725   Max.   :21.1266  
+                 NA's   :27                                         
+    rentals    
+ Min.   :  22  
+ 1st Qu.:3152  
+ Median :4548  
+ Mean   :4504  
+ 3rd Qu.:5956  
+ Max.   :8714  
+               </code></pre>
+</div>
+</div>
+<p>This data is showcasing our factor values that we had just developed.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>    season    holiday        weekday    weather
+ Winter:181   Yes:710   Sunday   :105   1:463  
+ Spring:184   No : 21   Monday   :105   2:247  
+ Summer:188             Tuesday  :104   3: 21  
+ Fall  :178             Wednesday:104          
+                        Thursday :104          
+                        Friday   :104          
+                        Saturday :105          </code></pre>
+</div>
+</div>
+<p>For the <code>realfeel</code> variable in the set of numeric variables, we are missing 27 values. These missing values arr originally shown in our dataset as <em>NA</em>. We will <em>impute</em> those missing values, meaning we will fill in numbers in the blank spots.</p>
+<p>Now, lets impute the missing values and compare to our original data.</p>
+<p>Now we can compare the resulting distributions.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>    realfeel      realfeel_orig   
+ Min.   : 12.59   Min.   : 12.59  
+ 1st Qu.: 43.80   1st Qu.: 43.38  
+ Median : 61.25   Median : 61.25  
+ Mean   : 59.66   Mean   : 59.60  
+ 3rd Qu.: 74.98   3rd Qu.: 75.43  
+ Max.   :103.10   Max.   :103.10  
+                  NA's   :27      </code></pre>
+</div>
+</div>
+<p>Looking at the above distributions, we see that <code>realfeel</code> doesn’t have any missing values and has the same median and a very similar mean. Nothing else has changed expect for the 1st and 3rd quartile values have shifted a bit.</p>
+<p>Step 4</p>
+<p><code>Rentals</code> appears to encode the total numbers of bike rentals that occurred on a given date. This is count data. We can use both descriptive statistics as well as a histogram to get a visual of this data. Additionally, we can look at a picture of rentals over time to see if there is some trends or outliers present within our dataset.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>    rentals    
+ Min.   :  22  
+ 1st Qu.:3152  
+ Median :4548  
+ Mean   :4504  
+ 3rd Qu.:5956  
+ Max.   :8714  </code></pre>
+</div>
+</div>
+<p>The lowest recorded number is 22 rentals, and the highest recorded number is 8,714 rentals. Across the data the mean is about 4500 rentals and the median is only a little higher, meaning the model shouldn’t have a big skew and is fairly symmetric.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see that we don’t have a huge number of outliers and the distribution is not highly skewed in either direction. However, one thing to note is that it is a tri-model looking distribution. There are peaks in the data which suggest that there might be three different normal distributions over-lapping with one another.</p>
+</section>
+<section id="step-5" class="level2">
+<h2 class="anchored" data-anchor-id="step-5">Step 5</h2>
+<p>Many of the supervised learning algorithms can be helped or hurt by the relationships between features that will be used as predictors. We need to understand the distributions of each variable, looking for skew, outliers, and any other weirdness. This could involve histograms or boxplots of the variables. We can use scatter plots to look at relationships between predictors. For easier comparison we can also use correlation matrices to show statistically linear relationships.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>First off we can see that <code>temperature</code> and <code>realfeel</code> has a strong and linear relationship. The correlation is 0.96. This could mean that one variable is a function of and associated with the other. Indeed, <code>realfeel</code> is a relationship between temperature and humidity and wind that is mean to incorporate what temperature <em>it feels like to a human</em>. In such a case, we will want to leave out a variable. Either <code>realfeel</code> or the other features that go into it.</p>
+<p>The distribution plots do not look particularly alarming. And the scatterplots don’t show any other overwhelmingly strong relationships. What we can see, is that there is a positive and nonlinear relationship between temperature and rentals as well as temperature and realfeel. Warmer temperatures are associated with more rentals, but eventually, warm temperatures that result in weather that is too hot for comfort will lead to a decrease in rentals.</p>
+<p>We can also check these correlations with <code>corrplot</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We’re going to Z-score normalize the <code>temperature</code> feature. Our reason is mostly arbitrary, but one benefit is that after the transformation, the mean will be zero. Positive numbers will represent above average temperatures and negative below average ones.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>  temperature      
+ Min.   :-2.38324  
+ 1st Qu.:-0.86479  
+ Median : 0.01611  
+ Mean   : 0.00000  
+ 3rd Qu.: 0.87425  
+ Max.   : 2.00098  </code></pre>
+</div>
+</div>
+<p>We can min-max normalize the wind variable. This will take all values of the feature and cram it into the interval <span class="math inline">\([0, 1]\)</span>. It essentially puts a feature into a percent range.</p>
+<p>A very important step, and a very common one required by many learning algorithms, is converting all categorical variables into dummy variables. This can be done many different ways in R. The <code>dummy</code> package does make it easier, however.</p>
+<p>Before running the <code>dummy()</code> function we had 10 variables in the dataset. The result of the function is a new dataset with only the dummy variables generated from the factor variables in <code>bikes</code>. At this point we can replace the factor variables with the dummy ones.</p>
+</section>
+<section id="step-6" class="level2">
+<h2 class="anchored" data-anchor-id="step-6">Step 6</h2>
+<p>We’re going to perform a penalized form of regression known as LASSO to find a decent predictive model. We’ll need to do a few things first. We need to get rid variables we don’t intend to have as predictors. The <code>date</code> and <code>realfeel</code> features will be removed.</p>
+<p>Normally, for a linear regression, you’d need to remove one dummy variable from a categorical variable. For example, season has 4 values (Winter, Spring, Fall, and Summer). We have dummy variable for each, but we need to omit one in order for it to work. But with LASSO, its okay and actually better to include them all and let the algorithm decide which to eliminate.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
+                         seg84
+intercept          7129.477106
+temperature         973.652665
+humidity          -2908.777178
+windspeed         -1819.172215
+season_Winter      -718.644052
+season_Spring       -70.054566
+season_Summer         8.026927
+season_Fall         297.688661
+holiday_Yes         404.154109
+holiday_No            .       
+weekday_Sunday     -237.481119
+weekday_Monday      -78.567823
+weekday_Tuesday       .       
+weekday_Wednesday     .       
+weekday_Thursday      .       
+weekday_Friday        .       
+weekday_Saturday     46.330329
+weather_1           254.947013
+weather_2             .       
+weather_3         -1627.856643
+temperature2       -516.515981</code></pre>
+</div>
+</div>
+</section>
+<section id="step-7" class="level2">
+<h2 class="anchored" data-anchor-id="step-7">Step 7</h2>
+<p>Now we are going to create a visual representation that will compare our predicted rentals to our actual rentals over time.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see that the relationship of this distribution resulted in a weak positive and linear relationship. When interpreting our data, we can say that that our data is not to biased for there seems to be a pretty even variance from the regression line in the points in the model.</p>
+</section>
+<section id="step-8" class="level2">
+<h2 class="anchored" data-anchor-id="step-8">Step 8</h2>
+<p>The features present in our dataset all have a sense of importance when developing predictions. Each feature adds a layer of specification and helps us develop a more reliable model. As we attempt to balance out bias and variance, making sure we are covering all aspects to help us make predictions is a must. As features are shifted to fit the appropriate data types they represent, being able to specify information into our model is then open to use. We cn then incorporate appropriate useage of out data and get a more in-depth predition as our model continues to learn more.</p>
+</section>
+<section id="step-9" class="level2">
+<h2 class="anchored" data-anchor-id="step-9">Step 9</h2>
+<p>When it comes to training a model to the data I had prepared, it connects back to all the changes and developments we had made to the feautures and data types in our original dataset. We added new data types, excluded variables, filled in missing values, created dummy variables, and even simplified much of the data we had changed into factors As new things were discovered and parameters were adjusted, the model learned new things. The model was capable of approaching a proper prediction as it shifted and adapted. This training we did to our model led it away from its bias and helped balance out the model in both bias and variance, thus creating a more dependable, yet not perfect, model for prediction.</p>
+</section>
+<section id="step-10" class="level2">
+<h2 class="anchored" data-anchor-id="step-10">Step 10</h2>
+<p>I feel as if creating dummy variables out of the features we had changed into factors were necessary for this prediction model. These numbers needed to represent the nominal data that they were intentionally marked down for and not used the same way as all of the numeric values present in the dataset. Specifiying these features that were changed into facors were also a big step in gettting more in-depth with our dataset as well. Filling in missing values for <code>realfeel</code> was a step that was I thought was not strictly required for our dataset for we decided that <code>realfeel</code> was a feauture to not use as a predictor. Though I do think it is important to include this step when dealing with other possible datasets. We imputed the median of <code>realfeel</code> into the spots of each missing value. If we would have thrown these 27 observations out, we could have possibly thrown out some important information, thus imputing these missing values allowed us to maintain this data and allowed us to take another step towards specification. Each model we had created regarding relationships, distributions, and even just overall summaries of our features within our datasets all helped us determine which data to include or to not include. Each step had an importance as we learn how to properly train and test our data.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,128 @@
+[
+  {
+    "objectID": "posts/Problem Set 2/index.html",
+    "href": "posts/Problem Set 2/index.html",
+    "title": "Data Mining: Problem Set 2",
+    "section": "",
+    "text": "Rows: 731\nColumns: 10\n$ date        &lt;date&gt; 2011-01-01, 2011-01-02, 2011-01-03, 2011-01-04, 2011-01-0…\n$ season      &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…\n$ holiday     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0…\n$ weekday     &lt;dbl&gt; 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4…\n$ weather     &lt;dbl&gt; 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2…\n$ temperature &lt;dbl&gt; 46.71653, 48.35024, 34.21239, 34.52000, 36.80056, 34.88784…\n$ realfeel    &lt;dbl&gt; 46.39865, 45.22419, 25.70131, 28.40009, 30.43728, NA, 28.0…\n$ humidity    &lt;dbl&gt; 0.805833, 0.696087, 0.437273, 0.590435, 0.436957, 0.518261…\n$ windspeed   &lt;dbl&gt; 6.679665, 10.347140, 10.337565, 6.673420, 7.780994, 3.7287…\n$ rentals     &lt;dbl&gt; 985, 801, 1349, 1562, 1600, 1606, 1510, 959, 822, 1321, 12…"
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-1",
+    "href": "posts/Problem Set 2/index.html#step-1",
+    "title": "Data Mining: Problem Set 2",
+    "section": "",
+    "text": "Rows: 731\nColumns: 10\n$ date        &lt;date&gt; 2011-01-01, 2011-01-02, 2011-01-03, 2011-01-04, 2011-01-0…\n$ season      &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…\n$ holiday     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0…\n$ weekday     &lt;dbl&gt; 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4…\n$ weather     &lt;dbl&gt; 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2…\n$ temperature &lt;dbl&gt; 46.71653, 48.35024, 34.21239, 34.52000, 36.80056, 34.88784…\n$ realfeel    &lt;dbl&gt; 46.39865, 45.22419, 25.70131, 28.40009, 30.43728, NA, 28.0…\n$ humidity    &lt;dbl&gt; 0.805833, 0.696087, 0.437273, 0.590435, 0.436957, 0.518261…\n$ windspeed   &lt;dbl&gt; 6.679665, 10.347140, 10.337565, 6.673420, 7.780994, 3.7287…\n$ rentals     &lt;dbl&gt; 985, 801, 1349, 1562, 1600, 1606, 1510, 959, 822, 1321, 12…"
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-2",
+    "href": "posts/Problem Set 2/index.html#step-2",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 2",
+    "text": "Step 2\nWhen looking at our data that has been marked as numeric data types, there are a few variables that are not truly represented as numeric. These variables are season, holiday, weekday and weather. For example, the table below represents the numbers of observations for the variable season, for the total of observations within each month and season is shown. The numbers are better off added up to see the total observations within each category, not to compare the results and summmaries of each.\n\n\n      month\nseason  1  2  3  4  5  6  7  8  9 10 11 12\n     1 62 57 40  0  0  0  0  0  0  0  0 22\n     2  0  0 22 60 62 40  0  0  0  0  0  0\n     3  0  0  0  0  0 20 62 62 44  0  0  0\n     4  0  0  0  0  0  0  0  0 16 62 60 40\n\n\nFrom the table above, we can turn these variables into factors and get even more specific with season by specifying which season such as Winter, Spring, Summer and Fall is assigned to which number. I have assigned the seasons as, Winter = 1, Spring - 2, Summer = 3 and Fall = 4, for the table helps create the assumptions on which numbers would best fit with specific months and seasons. The variables of holiday, weekday and weather are currently numeric but better off represented as categorical data. These values represents a specific answer and are known as nominal data types. When it comes to holiday we can see that the numbers of 0 and 1 indicates that the data is either considered a holiday or not, so creating two groups for those numbers were easy to replace and specify. Now for weekday, changing the the numeric values into the days of the week such as: Sunday = 0, Monday = 1, Tuesday - 2, Wednesday = 3, Thursday = 4, Friday = 5 and Saturday = 6, will help indicate specific days that rentals took place throughout the week."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-3",
+    "href": "posts/Problem Set 2/index.html#step-3",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 3",
+    "text": "Step 3\nNow that we’ve got everything properly recognized as numeric or factor, we can use summary() to look at some basic statistics and also scout out missing values. To make things easier to read, we’ll divide summaries by numeric and factor data types.\nThis data is showcasing our numeric values.\n\n\n  temperature       realfeel         humidity        windspeed      \n Min.   :22.60   Min.   : 12.59   Min.   :0.0000   Min.   : 0.9322  \n 1st Qu.:46.12   1st Qu.: 43.38   1st Qu.:0.5200   1st Qu.: 5.6182  \n Median :59.76   Median : 61.25   Median :0.6267   Median : 7.5343  \n Mean   :59.51   Mean   : 59.60   Mean   :0.6279   Mean   : 7.9303  \n 3rd Qu.:73.05   3rd Qu.: 75.43   3rd Qu.:0.7302   3rd Qu.: 9.7092  \n Max.   :90.50   Max.   :103.10   Max.   :0.9725   Max.   :21.1266  \n                 NA's   :27                                         \n    rentals    \n Min.   :  22  \n 1st Qu.:3152  \n Median :4548  \n Mean   :4504  \n 3rd Qu.:5956  \n Max.   :8714  \n               \n\n\nThis data is showcasing our factor values that we had just developed.\n\n\n    season    holiday        weekday    weather\n Winter:181   Yes:710   Sunday   :105   1:463  \n Spring:184   No : 21   Monday   :105   2:247  \n Summer:188             Tuesday  :104   3: 21  \n Fall  :178             Wednesday:104          \n                        Thursday :104          \n                        Friday   :104          \n                        Saturday :105          \n\n\nFor the realfeel variable in the set of numeric variables, we are missing 27 values. These missing values arr originally shown in our dataset as NA. We will impute those missing values, meaning we will fill in numbers in the blank spots.\nNow, lets impute the missing values and compare to our original data.\nNow we can compare the resulting distributions.\n\n\n    realfeel      realfeel_orig   \n Min.   : 12.59   Min.   : 12.59  \n 1st Qu.: 43.80   1st Qu.: 43.38  \n Median : 61.25   Median : 61.25  \n Mean   : 59.66   Mean   : 59.60  \n 3rd Qu.: 74.98   3rd Qu.: 75.43  \n Max.   :103.10   Max.   :103.10  \n                  NA's   :27      \n\n\nLooking at the above distributions, we see that realfeel doesn’t have any missing values and has the same median and a very similar mean. Nothing else has changed expect for the 1st and 3rd quartile values have shifted a bit.\nStep 4\nRentals appears to encode the total numbers of bike rentals that occurred on a given date. This is count data. We can use both descriptive statistics as well as a histogram to get a visual of this data. Additionally, we can look at a picture of rentals over time to see if there is some trends or outliers present within our dataset.\n\n\n    rentals    \n Min.   :  22  \n 1st Qu.:3152  \n Median :4548  \n Mean   :4504  \n 3rd Qu.:5956  \n Max.   :8714  \n\n\nThe lowest recorded number is 22 rentals, and the highest recorded number is 8,714 rentals. Across the data the mean is about 4500 rentals and the median is only a little higher, meaning the model shouldn’t have a big skew and is fairly symmetric.\n\n\n\n\n\nWe can see that we don’t have a huge number of outliers and the distribution is not highly skewed in either direction. However, one thing to note is that it is a tri-model looking distribution. There are peaks in the data which suggest that there might be three different normal distributions over-lapping with one another."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-5",
+    "href": "posts/Problem Set 2/index.html#step-5",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 5",
+    "text": "Step 5\nMany of the supervised learning algorithms can be helped or hurt by the relationships between features that will be used as predictors. We need to understand the distributions of each variable, looking for skew, outliers, and any other weirdness. This could involve histograms or boxplots of the variables. We can use scatter plots to look at relationships between predictors. For easier comparison we can also use correlation matrices to show statistically linear relationships.\n\n\n\n\n\nFirst off we can see that temperature and realfeel has a strong and linear relationship. The correlation is 0.96. This could mean that one variable is a function of and associated with the other. Indeed, realfeel is a relationship between temperature and humidity and wind that is mean to incorporate what temperature it feels like to a human. In such a case, we will want to leave out a variable. Either realfeel or the other features that go into it.\nThe distribution plots do not look particularly alarming. And the scatterplots don’t show any other overwhelmingly strong relationships. What we can see, is that there is a positive and nonlinear relationship between temperature and rentals as well as temperature and realfeel. Warmer temperatures are associated with more rentals, but eventually, warm temperatures that result in weather that is too hot for comfort will lead to a decrease in rentals.\nWe can also check these correlations with corrplot.\n\n\n\n\n\nWe’re going to Z-score normalize the temperature feature. Our reason is mostly arbitrary, but one benefit is that after the transformation, the mean will be zero. Positive numbers will represent above average temperatures and negative below average ones.\n\n\n  temperature      \n Min.   :-2.38324  \n 1st Qu.:-0.86479  \n Median : 0.01611  \n Mean   : 0.00000  \n 3rd Qu.: 0.87425  \n Max.   : 2.00098  \n\n\nWe can min-max normalize the wind variable. This will take all values of the feature and cram it into the interval \\([0, 1]\\). It essentially puts a feature into a percent range.\nA very important step, and a very common one required by many learning algorithms, is converting all categorical variables into dummy variables. This can be done many different ways in R. The dummy package does make it easier, however.\nBefore running the dummy() function we had 10 variables in the dataset. The result of the function is a new dataset with only the dummy variables generated from the factor variables in bikes. At this point we can replace the factor variables with the dummy ones."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-6",
+    "href": "posts/Problem Set 2/index.html#step-6",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 6",
+    "text": "Step 6\nWe’re going to perform a penalized form of regression known as LASSO to find a decent predictive model. We’ll need to do a few things first. We need to get rid variables we don’t intend to have as predictors. The date and realfeel features will be removed.\nNormally, for a linear regression, you’d need to remove one dummy variable from a categorical variable. For example, season has 4 values (Winter, Spring, Fall, and Summer). We have dummy variable for each, but we need to omit one in order for it to work. But with LASSO, its okay and actually better to include them all and let the algorithm decide which to eliminate.\n\n\n\n\n\n\n\n21 x 1 sparse Matrix of class \"dgCMatrix\"\n                         seg84\nintercept          7129.477106\ntemperature         973.652665\nhumidity          -2908.777178\nwindspeed         -1819.172215\nseason_Winter      -718.644052\nseason_Spring       -70.054566\nseason_Summer         8.026927\nseason_Fall         297.688661\nholiday_Yes         404.154109\nholiday_No            .       \nweekday_Sunday     -237.481119\nweekday_Monday      -78.567823\nweekday_Tuesday       .       \nweekday_Wednesday     .       \nweekday_Thursday      .       \nweekday_Friday        .       \nweekday_Saturday     46.330329\nweather_1           254.947013\nweather_2             .       \nweather_3         -1627.856643\ntemperature2       -516.515981"
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-7",
+    "href": "posts/Problem Set 2/index.html#step-7",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 7",
+    "text": "Step 7\nNow we are going to create a visual representation that will compare our predicted rentals to our actual rentals over time.\n\n\n\n\n\nWe can see that the relationship of this distribution resulted in a weak positive and linear relationship. When interpreting our data, we can say that that our data is not to biased for there seems to be a pretty even variance from the regression line in the points in the model."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-8",
+    "href": "posts/Problem Set 2/index.html#step-8",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 8",
+    "text": "Step 8\nThe features present in our dataset all have a sense of importance when developing predictions. Each feature adds a layer of specification and helps us develop a more reliable model. As we attempt to balance out bias and variance, making sure we are covering all aspects to help us make predictions is a must. As features are shifted to fit the appropriate data types they represent, being able to specify information into our model is then open to use. We cn then incorporate appropriate useage of out data and get a more in-depth predition as our model continues to learn more."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-9",
+    "href": "posts/Problem Set 2/index.html#step-9",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 9",
+    "text": "Step 9\nWhen it comes to training a model to the data I had prepared, it connects back to all the changes and developments we had made to the feautures and data types in our original dataset. We added new data types, excluded variables, filled in missing values, created dummy variables, and even simplified much of the data we had changed into factors As new things were discovered and parameters were adjusted, the model learned new things. The model was capable of approaching a proper prediction as it shifted and adapted. This training we did to our model led it away from its bias and helped balance out the model in both bias and variance, thus creating a more dependable, yet not perfect, model for prediction."
+  },
+  {
+    "objectID": "posts/Problem Set 2/index.html#step-10",
+    "href": "posts/Problem Set 2/index.html#step-10",
+    "title": "Data Mining: Problem Set 2",
+    "section": "Step 10",
+    "text": "Step 10\nI feel as if creating dummy variables out of the features we had changed into factors were necessary for this prediction model. These numbers needed to represent the nominal data that they were intentionally marked down for and not used the same way as all of the numeric values present in the dataset. Specifiying these features that were changed into facors were also a big step in gettting more in-depth with our dataset as well. Filling in missing values for realfeel was a step that was I thought was not strictly required for our dataset for we decided that realfeel was a feauture to not use as a predictor. Though I do think it is important to include this step when dealing with other possible datasets. We imputed the median of realfeel into the spots of each missing value. If we would have thrown these 27 observations out, we could have possibly thrown out some important information, thus imputing these missing values allowed us to maintain this data and allowed us to take another step towards specification. Each model we had created regarding relationships, distributions, and even just overall summaries of our features within our datasets all helped us determine which data to include or to not include. Each step had an importance as we learn how to properly train and test our data."
+  },
+  {
+    "objectID": "posts/Demo Post 1/index.html",
+    "href": "posts/Demo Post 1/index.html",
+    "title": "Demo Post 1",
+    "section": "",
+    "text": "This is a demo post in which we begin the blog. The idea here is that you create one post with this quarto document. The quarto document for a post will be named “index.qmd” insides of folder with the name of the post. For example, if I wanted my post to be titled “Demo Post 1” then I would do the following.\nAfter doing that, you can then edit the index.qmd document for that new post to your heart’s content. Lets do a little of that now so you can see how this might work."
+  },
+  {
+    "objectID": "posts/Demo Post 1/index.html#including-resources",
+    "href": "posts/Demo Post 1/index.html#including-resources",
+    "title": "Demo Post 1",
+    "section": "Including Resources",
+    "text": "Including Resources\nSuppose you wanted to discuss something, like the CRISP-DM process for analytics projects. You might wish to refer to an image of the process and you could include the image in the “Demo Post 1” folder and reference it here in the document.\n\n\n\n\n\nYou can easily insert the image through the visual editor in Posit / RStudio."
+  },
+  {
+    "objectID": "posts/Demo Post 1/index.html#data-and-output",
+    "href": "posts/Demo Post 1/index.html#data-and-output",
+    "title": "Demo Post 1",
+    "section": "Data and Output",
+    "text": "Data and Output\nLets look at some data.\n\nlibrary(tidyverse)\nlibrary(ggthemes)\ndata(\"USArrests\")\n\nUSArrests %&gt;%\n  ggplot(aes(x = Assault, y = Murder)) +\n  geom_point(pch = 21, color = \"coral3\", bg = \"coral\", size=3) +\n  labs(title = \"Arrests for Murder vs. Assault in US States\",\n       x = \"Arrests for assault per 100,000\",\n       y = \"Arrests for murder per 100,000\") +\n  theme_clean()\n\n\n\n\nThis would show us a relationship that we could then spend some paragraphs analyzing and interpreting."
+  },
+  {
+    "objectID": "posts/Demo Post 2/index.html",
+    "href": "posts/Demo Post 2/index.html",
+    "title": "Demo Post 2",
+    "section": "",
+    "text": "We are looking at arrests data by state. The data set has 50 rows (one for each state) and four variables.\n\nglimpse(USArrests)\n\nRows: 50\nColumns: 4\n$ Murder   &lt;dbl&gt; 13.2, 10.0, 8.1, 8.8, 9.0, 7.9, 3.3, 5.9, 15.4, 17.4, 5.3, 2.…\n$ Assault  &lt;int&gt; 236, 263, 294, 190, 276, 204, 110, 238, 335, 211, 46, 120, 24…\n$ UrbanPop &lt;int&gt; 58, 48, 80, 50, 91, 78, 77, 72, 80, 60, 83, 54, 83, 65, 57, 6…\n$ Rape     &lt;dbl&gt; 21.2, 44.5, 31.0, 19.5, 40.6, 38.7, 11.1, 15.8, 31.9, 25.8, 2…\n\n\nEach of the variables are a numeric-continuous data type. We have arrests per 100,000 people for three violent crimes: assault, murder, and rape. We also have a column indicating the degree of urban population in that state. Before preceding with prediction, we note that tree-based techniques can be more unstable if the variables are too correlated with one another. We can also see if there are any extreme skews in the data.\n\nlibrary(GGally)\nggpairs(USArrests)\n\n\n\n\nWe do see some positive relationships and stronger correlations, but mayne not quite enough to get us in trouble.\nNow lets try and predict Murder using the other features.\n\ndt = rpart(Murder ~.,\n           data=USArrests)\nrpart.plot(dt)\n\n\n\n\nWe can calculate a kind of R-squared measure of accuracy by squaring the correlation between the actual Murder values with our predicted ones.\n\nUSArrests %&gt;%\n  mutate(predicted_murder = predict(dt, USArrests)) %&gt;%\n  select(Murder, predicted_murder) %&gt;%\n  cor() -&gt; corrmat\n\nrsq = corrmat[[\"Murder\", \"predicted_murder\"]]^2\nprint(paste(\"The r-square for our model is\", round(rsq,2), sep=\": \"))\n\n[1] \"The r-square for our model is: 0.78\""
+  },
+  {
+    "objectID": "posts/Demo Post 2/index.html#understanding-the-data",
+    "href": "posts/Demo Post 2/index.html#understanding-the-data",
+    "title": "Demo Post 2",
+    "section": "",
+    "text": "We are looking at arrests data by state. The data set has 50 rows (one for each state) and four variables.\n\nglimpse(USArrests)\n\nRows: 50\nColumns: 4\n$ Murder   &lt;dbl&gt; 13.2, 10.0, 8.1, 8.8, 9.0, 7.9, 3.3, 5.9, 15.4, 17.4, 5.3, 2.…\n$ Assault  &lt;int&gt; 236, 263, 294, 190, 276, 204, 110, 238, 335, 211, 46, 120, 24…\n$ UrbanPop &lt;int&gt; 58, 48, 80, 50, 91, 78, 77, 72, 80, 60, 83, 54, 83, 65, 57, 6…\n$ Rape     &lt;dbl&gt; 21.2, 44.5, 31.0, 19.5, 40.6, 38.7, 11.1, 15.8, 31.9, 25.8, 2…\n\n\nEach of the variables are a numeric-continuous data type. We have arrests per 100,000 people for three violent crimes: assault, murder, and rape. We also have a column indicating the degree of urban population in that state. Before preceding with prediction, we note that tree-based techniques can be more unstable if the variables are too correlated with one another. We can also see if there are any extreme skews in the data.\n\nlibrary(GGally)\nggpairs(USArrests)\n\n\n\n\nWe do see some positive relationships and stronger correlations, but mayne not quite enough to get us in trouble.\nNow lets try and predict Murder using the other features.\n\ndt = rpart(Murder ~.,\n           data=USArrests)\nrpart.plot(dt)\n\n\n\n\nWe can calculate a kind of R-squared measure of accuracy by squaring the correlation between the actual Murder values with our predicted ones.\n\nUSArrests %&gt;%\n  mutate(predicted_murder = predict(dt, USArrests)) %&gt;%\n  select(Murder, predicted_murder) %&gt;%\n  cor() -&gt; corrmat\n\nrsq = corrmat[[\"Murder\", \"predicted_murder\"]]^2\nprint(paste(\"The r-square for our model is\", round(rsq,2), sep=\": \"))\n\n[1] \"The r-square for our model is: 0.78\""
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Projects",
+    "section": "",
+    "text": "Projects are different than posts. Projects should be more expansive, impressive and generally more professional in nature compared to posts. Posts can be works in progress. Small ideas or things you did that you thought were interesting. Projects should really showcase your professional abilities. You don’t need to have too many, just make them good. And try to always have one “in the works” so that employers and collaborators can see that you’re driven.\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Blog Posts",
+    "section": "",
+    "text": "Data Mining: Problem Set 2\n\n\n\n\n\n\n\n\n\n\n\n\nSep 17, 2023\n\n\nAnnika G. Lee\n\n\n\n\n\n\n  \n\n\n\n\nDemo Post 2\n\n\n\n\n\n\n\ndecision trees\n\n\nmachine learning\n\n\narrests\n\n\n\n\n\n\n\n\n\n\n\nSep 5, 2023\n\n\nJane Doe\n\n\n\n\n\n\n  \n\n\n\n\nDemo Post 1\n\n\n\n\n\n\n\nquarto\n\n\ncrisp-dm\n\n\nscatterplot\n\n\n\n\n\n\n\n\n\n\n\nSep 1, 2023\n\n\nJane Doe\n\n\n\n\n\n\nNo matching items"
+  }
+]

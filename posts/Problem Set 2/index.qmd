@@ -1,0 +1,262 @@
+---
+title: "Data Mining: Problem Set 2"
+author: "Annika G. Lee"
+date: "September 17, 2023"
+format: html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+#| message: false
+#| warning: false
+# Clear everything
+rm(list = ls())
+
+# Load libraries
+library(tidyverse)
+library(ggthemes)
+library(GGally)
+library(dummy)
+library(corrplot)
+library(lubridate)
+library(gamlr)
+```
+
+## Step 1
+
+```{r}
+bikes = read_csv("bikes_ps.csv")
+glimpse(bikes)
+```
+
+## Step 2
+
+When looking at our data that has been marked as numeric data types, there are a few variables that are not truly represented as numeric. These variables are `season`, `holiday`, `weekday` and `weather`. For example, the table below represents the numbers of observations for the variable `season`, for the total of observations within each month and season is shown. The numbers are better off added up to see the total observations within each category, not to compare the results and summmaries of each.
+
+```{r}
+# Create a new feature representing the month of year
+# i.e., jan = 1, feb = 2, ..., dec = 12.
+# Then we'll create a table showing season by month
+bikes %>%
+  mutate(month = month(date)) %>%
+  group_by(month) %>%
+  select(season, month) %>%
+  table()
+```
+
+From the table above, we can turn these variables into factors and get even more specific with `season` by specifying which season such as *Winter*, *Spring*, *Summer* and *Fall* is assigned to which number. I have assigned the seasons as, `Winter = 1`, `Spring - 2`, `Summer = 3` and `Fall = 4`, for the table helps create the assumptions on which numbers would best fit with specific months and seasons. The variables of `holiday`, `weekday` and `weather` are currently numeric but better off represented as categorical data. These values represents a specific answer and are known as nominal data types. When it comes to `holiday` we can see that the numbers of *0* and *1* indicates that the data is either considered a holiday or not, so creating two groups for those numbers were easy to replace and specify. Now for `weekday`, changing the the numeric values into the days of the week such as: `Sunday = 0`, `Monday = 1`, `Tuesday - 2`, `Wednesday = 3`, `Thursday = 4`, `Friday = 5` and `Saturday = 6`, will help indicate specific days that rentals took place throughout the week.
+
+```{r}
+bikes = bikes %>%
+  mutate_at(vars(season, holiday, weekday, weather), factor) %>%
+  mutate(season = fct_recode(season, "Winter"="1", 
+                                     "Spring"="2",
+                                     "Summer"="3",
+                                     "Fall"="4")) %>%
+  mutate(weekday = fct_recode(weekday, "Sunday" = "0",
+                             "Monday" = "1",
+                             "Tuesday" = "2",
+                             "Wednesday" = "3",
+                             "Thursday" = "4",
+                             "Friday" = "5",
+                             "Saturday" = "6")) %>%
+  mutate(holiday = fct_recode(holiday, "Yes" = "0",
+                              "No" = "1"))
+```
+
+## Step 3
+
+Now that we've got everything properly recognized as numeric or factor, we can use `summary()` to look at some basic statistics and also scout out missing values. To make things easier to read, we'll divide summaries by numeric and factor data types.
+
+This data is showcasing our numeric values.
+
+```{r}
+bikes %>%
+  select(-date) %>%
+  keep(is.numeric) %>%
+  summary()
+```
+
+This data is showcasing our factor values that we had just developed.
+
+```{r}
+bikes %>%
+  select(-date) %>%
+  keep(is.factor) %>%
+  summary()
+```
+
+For the `realfeel` variable in the set of numeric variables, we are missing 27 values. These missing values arr originally shown in our dataset as *NA*. We will *impute* those missing values, meaning we will fill in numbers in the blank spots.
+
+```{r}
+bikes = bikes %>%
+  mutate(realfeel_orig = realfeel)
+```
+
+Now, lets impute the missing values and compare to our original data.
+
+```{r}
+bikes = bikes %>%
+  mutate(realfeel = ifelse(is.na(realfeel),
+                           median(realfeel, na.rm = TRUE),
+                           realfeel))
+```
+
+Now we can compare the resulting distributions.
+
+```{r}
+bikes %>%
+  select(realfeel, realfeel_orig) %>%
+  summary()
+```
+
+Looking at the above distributions, we see that `realfeel` doesn't have any missing values and has the same median and a very similar mean. Nothing else has changed expect for the 1st and 3rd quartile values have shifted a bit.
+
+```{r}
+# Remove the copy of original realfeel
+bikes = bikes %>% select(-realfeel_orig)
+```
+
+Step 4
+
+`Rentals` appears to encode the total numbers of bike rentals that occurred on a given date. This is count data. We can use both descriptive statistics as well as a histogram to get a visual of this data. Additionally, we can look at a picture of rentals over time to see if there is some trends or outliers present within our dataset.
+
+```{r}
+bikes %>% select(rentals) %>% summary()
+```
+
+The lowest recorded number is 22 rentals, and the highest recorded number is 8,714 rentals. Across the data the mean is about 4500 rentals and the median is only a little higher, meaning the model shouldn't have a big skew and is fairly symmetric.
+
+```{r}
+bikes %>%
+  ggplot(aes(x=rentals)) + 
+  geom_histogram(aes(y=after_stat(density)),
+                 fill = "aquamarine",
+                 color = "aquamarine3",
+                 alpha = 0.7) +
+  geom_density(color = "black") +
+  labs(title = "Distribution of Daily Bike Rentals",
+       x = "Rentals (count)") +
+  theme_clean()
+```
+
+We can see that we don't have a huge number of outliers and the distribution is not highly skewed in either direction. However, one thing to note is that it is a tri-model looking distribution. There are peaks in the data which suggest that there might be three different normal distributions over-lapping with one another.
+
+## Step 5
+
+Many of the supervised learning algorithms can be helped or hurt by the relationships between features that will be used as predictors. We need to understand the distributions of each variable, looking for skew, outliers, and any other weirdness. This could involve histograms or boxplots of the variables. We can use scatter plots to look at relationships between predictors. For easier comparison we can also use correlation matrices to show statistically linear relationships.
+
+```{r}
+#| message: false
+bikes %>%
+  keep(is.numeric) %>%
+  ggpairs()
+```
+
+First off we can see that `temperature` and `realfeel` has a strong and linear relationship. The correlation is 0.96. This could mean that one variable is a function of and associated with the other. Indeed, `realfeel` is a relationship between temperature and humidity and wind that is mean to incorporate what temperature *it feels like to a human*. In such a case, we will want to leave out a variable. Either `realfeel` or the other features that go into it.
+
+The distribution plots do not look particularly alarming. And the scatterplots don't show any other overwhelmingly strong relationships. What we can see, is that there is a positive and nonlinear relationship between temperature and rentals as well as temperature and realfeel. Warmer temperatures are associated with more rentals, but eventually, warm temperatures that result in weather that is too hot for comfort will lead to a decrease in rentals.
+
+We can also check these correlations with `corrplot`.
+
+```{r}
+bikes %>%
+  keep(is.numeric) %>%
+  cor() %>%
+  corrplot()
+```
+
+We're going to Z-score normalize the `temperature` feature. Our reason is mostly arbitrary, but one benefit is that after the transformation, the mean will be zero. Positive numbers will represent above average temperatures and negative below average ones.
+
+```{r}
+bikes = bikes %>%
+  mutate(temperature = (temperature - mean(temperature))/sd(temperature))
+
+bikes %>%
+  select(temperature) %>%
+  summary()
+```
+
+We can min-max normalize the wind variable. This will take all values of the feature and cram it into the interval $[0, 1]$. It essentially puts a feature into a percent range.
+
+```{r}
+bikes = bikes %>%
+  mutate(windspeed = (windspeed - min(windspeed))/(max(windspeed)-min(windspeed)))
+```
+
+A very important step, and a very common one required by many learning algorithms, is converting all categorical variables into dummy variables. This can be done many different ways in R. The `dummy` package does make it easier, however.
+
+```{r}
+# Convert every factor type feature into 
+# a collection dummy variables.
+bikes_dummies = dummy(bikes, int = TRUE)
+```
+
+Before running the `dummy()` function we had 10 variables in the dataset. The result of the function is a new dataset with only the dummy variables generated from the factor variables in `bikes`. At this point we can replace the factor variables with the dummy ones.
+
+```{r}
+bikes_num = bikes %>% keep(is.numeric)
+bikes = bind_cols(bikes_num, bikes_dummies)
+```
+
+## Step 6
+
+We're going to perform a penalized form of regression known as LASSO to find a decent predictive model. We'll need to do a few things first. We need to get rid variables we don't intend to have as predictors. The `date` and `realfeel` features will be removed.
+
+```{r}
+bikes = bikes %>%
+  select(-realfeel) %>%
+  mutate(temperature2 = temperature^2)
+```
+
+Normally, for a linear regression, you'd need to remove one dummy variable from a categorical variable. For example, season has 4 values (Winter, Spring, Fall, and Summer). We have dummy variable for each, but we need to omit one in order for it to work. But with LASSO, its okay and actually better to include them all and let the algorithm decide which to eliminate.
+
+```{r}
+# Separate predictors from target feature.
+rentals = bikes$rentals
+predictors = as.matrix(select(bikes, -rentals))
+predictors = predictors
+
+# estimate model  
+cv.model = cv.gamlr(x=predictors, y=rentals)
+plot(cv.model)
+```
+
+```{r}
+betamin = coef(cv.model, select = "min")
+betamin
+```
+
+## Step 7
+
+Now we are going to create a visual representation that will compare our predicted rentals to our actual rentals over time.
+
+```{r}
+bikes = bikes %>%
+  mutate(pred = as.numeric(predict(cv.model, predictors)))
+```
+
+```{r}
+bikes %>%
+  ggplot(aes(x=rentals, y=pred)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "blue") +
+  ggtitle("Bike Rental Predictions") +
+  xlab("Actual Rentals") +
+  ylab("Predicted Rentals")
+```
+
+We can see that the relationship of this distribution resulted in a weak positive and linear relationship. When interpreting our data, we can say that that our data is not to biased for there seems to be a pretty even variance from the regression line in the points in the model.
+
+## Step 8
+
+The features present in our dataset all have a sense of importance when developing predictions. Each feature adds a layer of specification and helps us develop a more reliable model. As we attempt to balance out bias and variance, making sure we are covering all aspects to help us make predictions is a must. As features are shifted to fit the appropriate data types they represent, being able to specify information into our model is then open to use. We cn then incorporate appropriate useage of out data and get a more in-depth predition as our model continues to learn more.
+
+## Step 9
+
+When it comes to training a model to the data I had prepared, it connects back to all the changes and developments we had made to the feautures and data types in our original dataset. We added new data types, excluded variables, filled in missing values, created dummy variables, and even simplified much of the data we had changed into factors As new things were discovered and parameters were adjusted, the model learned new things. The model was capable of approaching a proper prediction as it shifted and adapted. This training we did to our model led it away from its bias and helped balance out the model in both bias and variance, thus creating a more dependable, yet not perfect, model for prediction.
+
+## Step 10
+
+I feel as if creating dummy variables out of the features we had changed into factors were necessary for this prediction model. These numbers needed to represent the nominal data that they were intentionally marked down for and not used the same way as all of the numeric values present in the dataset. Specifiying these features that were changed into facors were also a big step in gettting more in-depth with our dataset as well. Filling in missing values for `realfeel` was a step that was I thought was not strictly required for our dataset for we decided that `realfeel` was a feauture to not use as a predictor. Though I do think it is important to include this step when dealing with other possible datasets. We imputed the median of `realfeel` into the spots of each missing value. If we would have thrown these 27 observations out, we could have possibly thrown out some important information, thus imputing these missing values allowed us to maintain this data and allowed us to take another step towards specification. Each model we had created regarding relationships, distributions, and even just overall summaries of our features within our datasets all helped us determine which data to include or to not include. Each step had an importance as we learn how to properly train and test our data.
