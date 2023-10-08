@@ -121,10 +121,10 @@ rm(samp)
 
 ## Part 7
 
-pre-pruning, limitations/boundaries -> limits complexity // post -> lets tree grow and justify -> post in this case
+Pre-pruning sets limitations and boundaries to the tree and limits the overall complexity of it. Whereas post-pruning allows the tree to continue growing nwith justifications being made to it. As we justify which data to use, we get to tune and retrain the tree.
 
 ```{r}
-#TRAIN/CONTROL DATA -> create hyperparamters to create parameters+models
+#TRAIN/CONTROL DATA
 train_ctrl = trainControl(method = "repeatedcv", number = 20, repeats = 10)
 tree = train(Price ~ .,
              data = training,
@@ -159,7 +159,15 @@ paste("Model RMSE:", pred.rmse)
 rpart.plot(training_regression_tree)
 ```
 
+```{r}
+fit = lm(Price ~., data = training)
+
+summary(fit)
+```
+
 ## Part 8
+
+When looking at our feature importance, we can determine that `Age`, `KM`, and \`Weight' are the only three variables that are difference in importance when compared to all other variables. We could possibly remove all other variables in the dataset.
 
 ```{r}
 #| warning: false
@@ -205,4 +213,7 @@ test_predictions = predict(tree, newdata = testing)
 test_rmse = postResample(pred = test_predictions,
                          obs = testing$Price)
 test_rmse
+```
+
+```{}
 ```
