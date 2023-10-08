@@ -161,7 +161,7 @@ rpart.plot(training_regression_tree)
 
 ## Part 8
 
-When looking at our feature importance, we can determine that `Age`, `KM`, and \`Weight' are the only three variables that are difference in importance when compared to all other variables. We could possibly remove all other variables in the dataset.
+When looking at our feature importance, we can determine that `Age`, `KM`, and `Weight` are the only three variables that have a difference in importance when compared to all other variables. We could possibly remove all other variables in the dataset.
 
 ```{r}
 #| warning: false
