@@ -346,7 +346,7 @@ Summary of sample sizes: 1436, 1436, 1436, 1436, 1436, 1436, ...
 Resampling results:
 
   RMSE      Rsquared   MAE     
-  1621.731  0.8061839  866.2692
+  1469.441  0.8338681  848.2138
 
 Tuning parameter 'intercept' was held constant at a value of TRUE</code></pre>
 </div>
@@ -479,9 +479,9 @@ F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="part-7" class="level2">
 <h2 class="anchored" data-anchor-id="part-7">Part 7</h2>
-<p>pre-pruning, limitations/boundaries -&gt; limits complexity // post -&gt; lets tree grow and justify -&gt; post in this case</p>
+<p>Pre-pruning sets limitations and boundaries to the tree and limits the overall complexity of it. Whereas post-pruning allows the tree to continue growing nwith justifications being made to it. As we justify which data to use, we get to tune and retrain the tree.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TRAIN/CONTROL DATA -&gt; create hyperparamters to create parameters+models</span></span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TRAIN/CONTROL DATA</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>train_ctrl <span class="ot">=</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"repeatedcv"</span>, <span class="at">number =</span> <span class="dv">20</span>, <span class="at">repeats =</span> <span class="dv">10</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">=</span> <span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> training,</span>
@@ -490,7 +490,7 @@ F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>)),</span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">minsplit =</span> <span class="dv">1</span>, <span class="at">minbucket =</span> <span class="dv">1</span>)</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>             )</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>tree</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>tree </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>CART 
 
@@ -555,6 +555,7 @@ The final value used for the model was cp = 0.01.</code></pre>
 </section>
 <section id="part-8" class="level2">
 <h2 class="anchored" data-anchor-id="part-8">Part 8</h2>
+<p>When looking at our feature importance, we can determine that <code>Age</code>, <code>KM</code>, and `Weight’ are the only three variables that are difference in importance when compared to all other variables. We could possibly remove all other variables in the dataset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(iml)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
@@ -697,15 +698,16 @@ The final value used for the model was cp = 0.01.</code></pre>
 <section id="part-10" class="level2">
 <h2 class="anchored" data-anchor-id="part-10">Part 10</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>test_predictions <span class="ot">=</span> <span class="fu">predict</span>(tree, <span class="at">newdata =</span> testing)</span>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>test_predictions <span class="ot">=</span> <span class="fu">predict</span>(regression_tree2, <span class="at">newdata =</span> testing)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>test_rmse <span class="ot">=</span> <span class="fu">postResample</span>(<span class="at">pred =</span> test_predictions,</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">obs =</span> testing<span class="sc">$</span>Price)</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>test_rmse</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        RMSE     Rsquared          MAE 
-1495.6896495    0.8313385 1068.1679670 </code></pre>
+1524.6855721    0.8265925 1077.5923760 </code></pre>
 </div>
 </div>
+<p>We can see from the training and testing of our dataset that the RMSE from the cross validation error with the most optimal model with the smallest complexity model is 1372.104. The RMSE for the testing data is 1495.690. We can see this due to our usage of less variables in when developing predictions with the testing data. Less variables means less accuracy to the model, which makes sense in this instance.</p>
 
 
 </section>

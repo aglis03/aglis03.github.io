@@ -133,7 +133,7 @@ tree = train(Price ~ .,
              tuneGrid = expand.grid(cp = seq(0.0, 0.1, 0.01)),
              control = rpart.control(method = "anova", minsplit = 1, minbucket = 1)
              )
-tree
+tree 
 ```
 
 ```{r}
@@ -157,12 +157,6 @@ paste("Model RMSE:", pred.rmse)
 
 ```{r}
 rpart.plot(training_regression_tree)
-```
-
-```{r}
-fit = lm(Price ~., data = training)
-
-summary(fit)
 ```
 
 ## Part 8
@@ -209,11 +203,10 @@ rpart.plot(regression_tree2)
 ## Part 10
 
 ```{r}
-test_predictions = predict(tree, newdata = testing)
+test_predictions = predict(regression_tree2, newdata = testing)
 test_rmse = postResample(pred = test_predictions,
                          obs = testing$Price)
 test_rmse
 ```
 
-```{}
-```
+We can see from the training and testing of our dataset that the RMSE from the cross validation error with the most optimal model with the smallest complexity model is 1372.104. The RMSE for the testing data is 1495.690. We can see this due to our usage of less variables in when developing predictions with the testing data. Less variables means less accuracy to the model, which makes sense in this instance.
