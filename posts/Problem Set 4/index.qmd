@@ -14,153 +14,146 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list = ls())
 library(tidyverse)
 library(caret)
-library(dummy)
-library(gamlr)
-library(rmarkdown)
+library(glmnet)
 library(rpart)
 library(pROC)
 library(ggthemes)
-library(corrplot)
 library(AppliedPredictiveModeling)
+library(performanceEstimation)
 ```
+
 
 ## Part 1
 
-Classification is the right approach for NVO's problem. The reason for this is because we are trying to predict discrete values using this dataset. These values are whether or not a person will respond to a mailing. We are not focusing on the predicted numbers and their root mean squared errors like we do with regression for we are looking at the accuracy of the dataset. Our goal is to target and focus on individuals that will likely answer increase NVO's response rate.
+Classification is the right approach for NVO's problem. The reason for this is because we are trying to predict discrete values using this dataset. These values are whether or not a person will respond to a mailing. We are not focusing on the predicted numbers and their root mean squared errors like we do with regression for we are looking at the accuracy of the dataset. Our goal is to target and focus on individuals that will likely respond and increase NVO's response rate.
 
 ```{r}
 donors = read_csv("donors.csv")
 glimpse(donors)
 ```
 
+
 ## Part 2
 
 This classifier being built to identify potential donors for NVO will be better to use due to the accuracy it could develop. The reason for this is due to us having the ability to exclude features that may not have much significance to help make predictions in the dataset. As we select certain features to use and to remove, we can train and split the data up further to aim for the accuracy we hope to achieve. We get to focus on the separate classes within the data and not just all of the data within the dataset as a whole.
 
 ```{r}
+# Preparing Data
+donors = donors %>%
+  rename(Responded = `respondedMailing`) %>%
+  mutate(Responded = factor(ifelse(Responded == TRUE, "1", "0")))
+```
+
+
+```{r}
 summary(donors)
 ```
+
 
 ## Part 3
 
 The most important measures from the confusion matrix that I will use to evaluate the classifier performance will be `Accuracy`, `Sensitivity` (Recall), and `Post Pred Value` (Precision). Since our goal is to not miss out on individuals who will actually respond, being more accurate is not going to be the only outstanding factor of our model. Recall and Precision will allow us to see the percentages of actual positives and how often these positive predictions are correct. As we relate the importance of these measures to mailer response rate and maximizing donation opportunities, positive predictions are the individuals that are predicted to achieve our goal, respond to our mailings.
 
-I decided to not include the variables of `states`, `numberChildren`, `wealthRating`, and `isHomeowner` due to the large amount of missing values and lack of usefulness they have to our predicitions. For variables with only a few missing values, I decided to fill in those missing values with the median of their variable for quantitative variables or dropped the missing variables for categorical variables in the dataset.
+There seems to be many missing values within the dataset. We can see that there is a class imbalance, for a very small percentage of people had actually responded.
+
+I decided to not include the variables of `states`, `numberChildren`, and `wealthRating` due to the large amount of missing values and lack of usefulness they have to our predictions. For variables with only a few missing values, I decided to fill in those missing values with the median of their variable for quantitative variables or dropped the missing variables for categorical variables in the dataset.
 
 ```{r}
 donors = donors %>%
-  rename(Responded = `respondedMailing`,
-         UrbanOrRural = `urbanicity`) %>%
-  mutate_at(vars(UrbanOrRural, socioEconomicStatus, gender, sweepstakesDonor, inHouseDonor, P3Donor, Responded), .funs=factor) %>%
+  select(-numberChildren, -wealthRating, -plannedGivingDonor, -state) %>%
+  mutate(isHomeowner = ifelse(is.na(isHomeowner), "UNKNOWN", isHomeowner)) %>%
   mutate(age = ifelse(is.na(age), median(age, na.rm = TRUE), age)) %>%
   mutate(incomeRating = ifelse(is.na(incomeRating), median(incomeRating, na.rm = TRUE), incomeRating)) %>%
-  select(-numberChildren, -wealthRating, -isHomeowner, -plannedGivingDonor, -state) %>%
-  drop_na()
+  drop_na() %>%
+  mutate_if(is.character, .funs=factor) %>%
+  mutate_if(is.logical, .funs=factor)
 ```
 
 ```{r}
 summary(donors)
+```
+
+```{r}
+transparentTheme(trans = .9)
+featurePlot(x = keep(donors, is.numeric),
+            y = donors$Responded,
+            plot = "box",
+            scales = list(y = list(relation = "free"),
+                          x = list(rot = 90)),
+            layout = c(4, 1),
+            auto.key = list(columns = 2))
 ```
 
 ```{r}
 donors %>%
   keep(is.numeric) %>%
   cor() %>%
-  corrplot::corrplot.mixed()
+  corrplot::corrplot(., method = "number", type = "lower", number.cex = 0.6, tl.cex = 0.7)
+```
+
+
+Due to high correlations being developed with the use of these variables, we could drop them from the dataset as we try to determine which variables would be most efficient in helping us find predictions.
+
+```{r}
+donors = donors %>%
+  select(-smallestGiftAmount, -largestGiftAmount)
 ```
 
 ```{r}
 # Partition our data
 set.seed(455)
 samp = caret::createDataPartition(donors$Responded, p = 0.7, list = FALSE)
-training = donors[samp,]
+train = donors[samp,]
 test = donors[-samp,]
+rm(samp)
 ```
 
-```{r}
-# Proportions of classes
-training %>%
-  select(Responded) %>%
-  table() %>%
-  prop.table()
-```
 
 ```{r}
-# Downsampling 
-set.seed(4959)
-down_train = caret::downSample(x = select(training, -Responded),
-                               y = training$Responded,
-                               yname = "Responded")
-
-table(down_train$Responded)
+# Observing Class Imbalance
+table(train$Responded)
 ```
 
 ```{r}
 # Smote
-library(performanceEstimation)
 set.seed(4959)
 smote_train = smote(Responded ~ .,
-                    data = training)
+                    data = train,
+                    perc.over = 8,
+                    perc.under = 2)
 
 table(smote_train$Responded)
 ```
 
+
 ## Part 4
 
-Lasso
-
 ```{r}
+# LASSO
+train.X = model.matrix(Responded ~ 0 + ., smote_train)
+train.Y = as.numeric(smote_train$Responded == "1")
 
+lasso = cv.glmnet(x = train.X, y = train.Y, type.measure = "class",
+                       nfolds = 20, family = 'binomial')
+plot(lasso)
 ```
+```{r}
+coef(lasso, s = 'lambda.min')
+```
+
 
 ## Part 5
 
 ```{r}
-#Unbalanced
-ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 30)
-set.seed(123)
-unbalanced_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation,
-             data = training, 
+# Smote Tree
+ctrl = caret::trainControl(method = "cv", number = 10)
+smote_tree = caret::train(Responded ~ .,
+             data = smote_train,
              method = "rpart",
-             metric = "Kappa",
+             metric = "Accuracy",
              trControl = ctrl,
-             tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.005)))
-
-plot(unbalanced_tree)
-```
-
-```{r}
-rpart.plot::rpart.plot(unbalanced_tree$finalModel)
-```
-
-```{r}
-#Downsampling
-ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 10)
-set.seed(123)
-down_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation, 
-             data = down_train, 
-             method = "rpart",
-             metric = "Kappa",
-             trControl = ctrl,
-             tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.005)))
-
-plot(down_tree)
-```
-
-```{r}
-rpart.plot::rpart.plot(down_tree$finalModel)
-```
-
-```{r}
-#Smote
-ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 10)
-set.seed(123)
-smote_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation, 
-             data = smote_train, 
-             method = "rpart",
-             metric = "Kappa",
-             trControl = ctrl,
-             tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.005)))
+             tuneGrid = expand.grid(cp = seq(0.0, 0.1, 0.005)),
+             control = rpart.control(maxdepth = 10, minsplit = 1, minbucket = 30))
 
 plot(smote_tree)
 ```
@@ -169,34 +162,108 @@ plot(smote_tree)
 rpart.plot::rpart.plot(smote_tree$finalModel)
 ```
 
+
 ## Part 6
 
-Evakuate performance of test data
+```{r}
+# Smote Evaluation
+test.X = model.matrix(Responded ~ 0 + ., test)
+lasso.pred.class = as.factor(predict(lasso, test.X, s = 'lambda.min', type = 'class'))
+tree.pred.class = as.factor(predict(smote_tree, test))
+
+cm.lasso = confusionMatrix(data = lasso.pred.class,
+                           reference = test$Responded,
+                           positive = "1")
+
+cm.tree = confusionMatrix(data = tree.pred.class,
+                          reference = test$Responded,
+                          positive = "1")
+```
 
 ```{r}
-
+print(cm.lasso)
 ```
+
+```{r}
+print(cm.tree)
+```
+
 
 ## Part 7
 
-ROC plot
+```{r}
+lasso.probs = predict(lasso, test.X, s = 'lambda.min', type = 'response')
+tree.probs = predict(smote_tree, test, type = 'prob')[,2]
+```
+
+This ROC plot can help me tell NVO that the LASSO model ended up performing better than the Decision Tree model. Both are pretty close when it comes to their results and their placement to the baseline on the plot, but the LASSO curve is shown to be further away from the baseline, thus having a better predictive performance.
 
 ```{r}
+#| warning: false
+#| message: false
 
+par(pty = "s")
+lasso_roc = roc(test$Responded ~ lasso.probs,
+                plot = TRUE, print.auc = TRUE, print.auc.x = 0.3, print.auc.y = 0.35,
+                col = "skyblue", lwd = 3, legacy.axes = TRUE)
+
+tree_roc = roc(test$Responded ~ tree.probs,
+                plot = TRUE, print.auc = TRUE, print.auc.x = 0.3, print.auc.y = 0.28,
+                col = "magenta", lwd = 3, legacy.axes = TRUE, add = TRUE)
+
+legend("bottomright", legend = c("LASSO", "Decision Tree"),
+       col = c("skyblue", "magenta"), lwd = 3)
 ```
 
 ## Part 8
 
-Pick best performing model
+Precision-Recall Chart
+```{r}
+prc = pROC::coords(lasso_roc, ret = c("threshold", "precision", "recall"))
+
+prc %>%
+  filter(recall > 0.01) %>%
+  ggplot(aes(x = recall, y = precision)) +
+  geom_line(linewidth = 2, color = "skyblue") +
+  geom_hline(yintercept = 0.05, color = "black", linetype = 'dashed') +
+  labs(title = "Precision-Recall Curve",
+       x = "Recall / Sensitivity / True Positive Rate",
+       y = "Precision (Response Rate") +
+  theme_clean()
+```
+
+Cumulative Gain Chart
+```{r}
+test$prob = lasso.probs = predict(lasso, test.X, s = 'lambda.min', type = 'response')
+```
 
 ```{r}
+test.cg = test %>%
+  select(Responded, prob) %>%
+  mutate(Responded = ifelse(Responded == "1", 1, 0)) %>%
+  arrange(desc(prob)) %>%
+  mutate(pct_dat = row_number() /n(),
+         pct_pos = cumsum(Responded)/sum(Responded))
 
+test.cg %>%
+  ggplot(aes(x = pct_dat, y = pct_pos)) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = "dashed") +
+  geom_vline(xintercept = 0.5, linetype = "dotted", color = "black") +
+  geom_line(linewidth = 1.5, color = "skyblue") +
+  labs(title = "Cumulative Gains for LASSO Model",
+       x = "Percent of Data Contacted",
+       y = "Percent of Responders Captured") +
+  theme_clean()
 ```
 
 ## Part 9
 
-Use 6+7 to describe how model should perform
+Using the charts from parts 6 and 7, the model that resulted as the most accurate was the Decision Tree model, whereas the LASSO model ended up with a higher Kappa. When looking at the Recall (*Sensitivity*) and Precision (*Pos Pred Value*), our business problem is trying to identify people who will respond and increase NVO's response rate as well. While we do aim to not waste materials and effort, we also don't want to miss out on opportunities.
+The two measures **Sensitivity** and **Pos Pred Value** will help us look at the trade-off we face here.
 
-```{r}
+The LASSO model has a higher sensitivity and precision despite a lower accuracy. However, its specificity is lower and its `Neg Pred Value` is higher. Both of them have small precisions (Pos Pred Value) which means our response rates could be lower. And their sensitivities are low, but data balancing allowed us to improve our model's ability to learn rules that help us sense the positive class and miss out on opportunities. Both models have high specificity, showing that they can predict who is not gping to respond at a higher rate.
 
-```
+We can see that much of the data being found using the LASSO model seems to perform better than the Decision Tree model. If using the data we have developed using the LASSO model data, we can assume that only 6% of our predictions will be correct and that 11.8% of our predicted responders are going to actually respond.
+
+The ROC plot also determines that the LASSO model performs better. Both are pretty close when it comes to their results and their placement to the baseline on the plot, but the LASSO curve is shown to be further away from the baseline, thus having a better predictive performance. With such numbers, we determine a bit better on whether or not we want to risk for more opportunities. Based off our numbers, it looks like we will go for more precision than opportunities due to such low numbers.

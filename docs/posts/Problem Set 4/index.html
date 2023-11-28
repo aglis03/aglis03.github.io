@@ -214,18 +214,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dummy)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gamlr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AppliedPredictiveModeling)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AppliedPredictiveModeling)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performanceEstimation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="part-1" class="level2">
 <h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
-<p>Classification is the right approach for NVO’s problem. The reason for this is because we are trying to predict discrete values using this dataset. These values are whether or not a person will respond to a mailing. We are not focusing on the predicted numbers and their root mean squared errors like we do with regression for we are looking at the accuracy of the dataset. Our goal is to target and focus on individuals that will likely answer increase NVO’s response rate.</p>
+<p>Classification is the right approach for NVO’s problem. The reason for this is because we are trying to predict discrete values using this dataset. These values are whether or not a person will respond to a mailing. We are not focusing on the predicted numbers and their root mean squared errors like we do with regression for we are looking at the accuracy of the dataset. Our goal is to target and focus on individuals that will likely respond and increase NVO’s response rate.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>donors <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"donors.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -272,7 +270,13 @@ $ respondedMailing        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
 <h2 class="anchored" data-anchor-id="part-2">Part 2</h2>
 <p>This classifier being built to identify potential donors for NVO will be better to use due to the accuracy it could develop. The reason for this is due to us having the ability to exclude features that may not have much significance to help make predictions in the dataset. As we select certain features to use and to remove, we can train and split the data up further to aim for the accuracy we hope to achieve. We get to focus on the separate classes within the data and not just all of the data within the dataset as a whole.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(donors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparing Data</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>donors <span class="ot">=</span> donors <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Responded =</span> <span class="st">`</span><span class="at">respondedMailing</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Responded =</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(Responded <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(donors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      age        numberChildren   incomeRating    wealthRating  
  Min.   : 1.00   Min.   :1.00    Min.   :1.000   Min.   :0.00   
@@ -314,33 +318,34 @@ $ respondedMailing        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
                                                                           
                                                                           
                                                                           
- isHomeowner       gender          respondedMailing
- Mode:logical   Length:95412       Mode :logical   
- TRUE:52354     Class :character   FALSE:90569     
- NA's:43058     Mode  :character   TRUE :4843      
-                                                   
-                                                   
-                                                   
-                                                   </code></pre>
+ isHomeowner       gender          Responded
+ Mode:logical   Length:95412       0:90569  
+ TRUE:52354     Class :character   1: 4843  
+ NA's:43058     Mode  :character            
+                                            
+                                            
+                                            
+                                            </code></pre>
 </div>
 </div>
 </section>
 <section id="part-3" class="level2">
 <h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
 <p>The most important measures from the confusion matrix that I will use to evaluate the classifier performance will be <code>Accuracy</code>, <code>Sensitivity</code> (Recall), and <code>Post Pred Value</code> (Precision). Since our goal is to not miss out on individuals who will actually respond, being more accurate is not going to be the only outstanding factor of our model. Recall and Precision will allow us to see the percentages of actual positives and how often these positive predictions are correct. As we relate the importance of these measures to mailer response rate and maximizing donation opportunities, positive predictions are the individuals that are predicted to achieve our goal, respond to our mailings.</p>
-<p>I decided to not include the variables of <code>states</code>, <code>numberChildren</code>, <code>wealthRating</code>, and <code>isHomeowner</code> due to the large amount of missing values and lack of usefulness they have to our predicitions. For variables with only a few missing values, I decided to fill in those missing values with the median of their variable for quantitative variables or dropped the missing variables for categorical variables in the dataset.</p>
+<p>There seems to be many missing values within the dataset. We can see that there is a class imbalance, for a very small percentage of people had actually responded.</p>
+<p>I decided to not include the variables of <code>states</code>, <code>numberChildren</code>, and <code>wealthRating</code> due to the large amount of missing values and lack of usefulness they have to our predictions. For variables with only a few missing values, I decided to fill in those missing values with the median of their variable for quantitative variables or dropped the missing variables for categorical variables in the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>donors <span class="ot">=</span> donors <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Responded =</span> <span class="st">`</span><span class="at">respondedMailing</span><span class="st">`</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">UrbanOrRural =</span> <span class="st">`</span><span class="at">urbanicity</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(UrbanOrRural, socioEconomicStatus, gender, sweepstakesDonor, inHouseDonor, P3Donor, Responded), <span class="at">.funs=</span>factor) <span class="sc">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(age), <span class="fu">median</span>(age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), age)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">incomeRating =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(incomeRating), <span class="fu">median</span>(incomeRating, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), incomeRating)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>numberChildren, <span class="sc">-</span>wealthRating, <span class="sc">-</span>isHomeowner, <span class="sc">-</span>plannedGivingDonor, <span class="sc">-</span>state) <span class="sc">%&gt;%</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>donors <span class="ot">=</span> donors <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>numberChildren, <span class="sc">-</span>wealthRating, <span class="sc">-</span>plannedGivingDonor, <span class="sc">-</span>state) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">isHomeowner =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(isHomeowner), <span class="st">"UNKNOWN"</span>, isHomeowner)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(age), <span class="fu">median</span>(age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), age)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">incomeRating =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(incomeRating), <span class="fu">median</span>(incomeRating, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), incomeRating)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, <span class="at">.funs=</span>factor) <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.logical, <span class="at">.funs=</span>factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(donors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(donors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      age         incomeRating   mailOrderPurchases totalGivingAmount
  Min.   : 1.00   Min.   :1.000   Min.   :  0.000    Min.   :  13.0   
@@ -363,95 +368,314 @@ $ respondedMailing        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
  Mean   : 5.547          Mean   :14.4                                          
  3rd Qu.: 9.000          3rd Qu.:17.0                                          
  Max.   :13.000          Max.   :23.0                                          
-  P3Donor      UrbanOrRural   socioEconomicStatus    gender      Responded    
- FALSE:86918   city  :18819   average:46367       female:50085   FALSE:84115  
- TRUE : 1675   rural :18777   highest:27050       joint :  354   TRUE : 4478  
-               suburb:20848   lowest :15176       male  :38154                
-               town  :18685                                                   
-               urban :11464                                                   
-                                                                              </code></pre>
+  P3Donor       urbanicity    socioEconomicStatus  isHomeowner   
+ FALSE:86918   city  :18819   average:46367       TRUE   :50357  
+ TRUE : 1675   rural :18777   highest:27050       UNKNOWN:38236  
+               suburb:20848   lowest :15176                      
+               town  :18685                                      
+               urban :11464                                      
+                                                                 
+    gender      Responded
+ female:50085   0:84115  
+ joint :  354   1: 4478  
+ male  :38154            
+                         
+                         
+                         </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>donors <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  corrplot<span class="sc">::</span><span class="fu">corrplot.mixed</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transparentTheme</span>(<span class="at">trans =</span> .<span class="dv">9</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">featurePlot</span>(<span class="at">x =</span> <span class="fu">keep</span>(donors, is.numeric),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> donors<span class="sc">$</span>Responded,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">plot =</span> <span class="st">"box"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">scales =</span> <span class="fu">list</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="at">relation =</span> <span class="st">"free"</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">x =</span> <span class="fu">list</span>(<span class="at">rot =</span> <span class="dv">90</span>)),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">layout =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">auto.key =</span> <span class="fu">list</span>(<span class="at">columns =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partition our data</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">455</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">createDataPartition</span>(donors<span class="sc">$</span>Responded, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>training <span class="ot">=</span> donors[samp,]</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> donors[<span class="sc">-</span>samp,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>donors <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  corrplot<span class="sc">::</span><span class="fu">corrplot</span>(., <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"lower"</span>, <span class="at">number.cex =</span> <span class="fl">0.6</span>, <span class="at">tl.cex =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Due to high correlations being developed with the use of these variables, we could drop them from the dataset as we try to determine which variables would be most efficient in helping us find predictions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>donors <span class="ot">=</span> donors <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>smallestGiftAmount, <span class="sc">-</span>largestGiftAmount)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportions of classes</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>training <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Responded) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prop.table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Responded
-     FALSE       TRUE 
-0.94944853 0.05055147 </code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partition our data</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">455</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">createDataPartition</span>(donors<span class="sc">$</span>Responded, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>train <span class="ot">=</span> donors[samp,]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> donors[<span class="sc">-</span>samp,]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Downsampling </span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4959</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>down_train <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">downSample</span>(<span class="at">x =</span> <span class="fu">select</span>(training, <span class="sc">-</span>Responded),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">y =</span> training<span class="sc">$</span>Responded,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">yname =</span> <span class="st">"Responded"</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(down_train<span class="sc">$</span>Responded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-FALSE  TRUE 
- 3135  3135 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Smote</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performanceEstimation)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4959</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>smote_train <span class="ot">=</span> <span class="fu">smote</span>(Responded <span class="sc">~</span> .,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> training)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(smote_train<span class="sc">$</span>Responded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Observing Class Imbalance</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(train<span class="sc">$</span>Responded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-FALSE  TRUE 
-12540  9405 </code></pre>
+    0     1 
+58881  3135 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Smote</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4959</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>smote_train <span class="ot">=</span> <span class="fu">smote</span>(Responded <span class="sc">~</span> .,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> train,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">perc.over =</span> <span class="dv">8</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">perc.under =</span> <span class="dv">2</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(smote_train<span class="sc">$</span>Responded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    0     1 
+50160 28215 </code></pre>
 </div>
 </div>
 </section>
 <section id="part-4" class="level2">
 <h2 class="anchored" data-anchor-id="part-4">Part 4</h2>
-<p>Lasso</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LASSO</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>train.X <span class="ot">=</span> <span class="fu">model.matrix</span>(Responded <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> ., smote_train)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>train.Y <span class="ot">=</span> <span class="fu">as.numeric</span>(smote_train<span class="sc">$</span>Responded <span class="sc">==</span> <span class="st">"1"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">=</span> <span class="fu">cv.glmnet</span>(<span class="at">x =</span> train.X, <span class="at">y =</span> train.Y, <span class="at">type.measure =</span> <span class="st">"class"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">nfolds =</span> <span class="dv">20</span>, <span class="at">family =</span> <span class="st">'binomial'</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lasso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lasso, <span class="at">s =</span> <span class="st">'lambda.min'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>22 x 1 sparse Matrix of class "dgCMatrix"
+                                      s1
+(Intercept)                 0.0464804674
+age                         .           
+incomeRating                0.0429794838
+mailOrderPurchases          .           
+totalGivingAmount           .           
+numberGifts                 0.0133683503
+averageGiftAmount          -0.0273379096
+yearsSinceFirstDonation     0.0001557296
+monthsSinceLastDonation    -0.0424595922
+inHouseDonorFALSE           .           
+inHouseDonorTRUE            .           
+sweepstakesDonorTRUE       -0.2936363281
+P3DonorTRUE                 .           
+urbanicityrural             .           
+urbanicitysuburb            0.0304234865
+urbanicitytown              0.0167131580
+urbanicityurban            -0.0699822042
+socioEconomicStatushighest  0.0895240586
+socioEconomicStatuslowest  -0.1593449705
+isHomeownerUNKNOWN          .           
+genderjoint                 .           
+gendermale                  .           </code></pre>
+</div>
+</div>
 </section>
 <section id="part-5" class="level2">
 <h2 class="anchored" data-anchor-id="part-5">Part 5</h2>
-<p>Decision Tree</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Smote Tree</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>ctrl <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>smote_tree <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">train</span>(Responded <span class="sc">~</span> .,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> smote_train,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">metric =</span> <span class="st">"Accuracy"</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> ctrl,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.005</span>)),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">maxdepth =</span> <span class="dv">10</span>, <span class="at">minsplit =</span> <span class="dv">1</span>, <span class="at">minbucket =</span> <span class="dv">30</span>))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(smote_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rpart.plot<span class="sc">::</span><span class="fu">rpart.plot</span>(smote_tree<span class="sc">$</span>finalModel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="part-6" class="level2">
 <h2 class="anchored" data-anchor-id="part-6">Part 6</h2>
-<p>Evakuate performance of test data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Smote Evaluation</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>test.X <span class="ot">=</span> <span class="fu">model.matrix</span>(Responded <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> ., test)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>lasso.pred.class <span class="ot">=</span> <span class="fu">as.factor</span>(<span class="fu">predict</span>(lasso, test.X, <span class="at">s =</span> <span class="st">'lambda.min'</span>, <span class="at">type =</span> <span class="st">'class'</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>tree.pred.class <span class="ot">=</span> <span class="fu">as.factor</span>(<span class="fu">predict</span>(smote_tree, test))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>cm.lasso <span class="ot">=</span> <span class="fu">confusionMatrix</span>(<span class="at">data =</span> lasso.pred.class,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">reference =</span> test<span class="sc">$</span>Responded,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">positive =</span> <span class="st">"1"</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>cm.tree <span class="ot">=</span> <span class="fu">confusionMatrix</span>(<span class="at">data =</span> tree.pred.class,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">reference =</span> test<span class="sc">$</span>Responded,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>                          <span class="at">positive =</span> <span class="st">"1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cm.lasso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction     0     1
+         0 24624  1261
+         1   610    82
+                                          
+               Accuracy : 0.9296          
+                 95% CI : (0.9265, 0.9326)
+    No Information Rate : 0.9495          
+    P-Value [Acc &gt; NIR] : 1               
+                                          
+                  Kappa : 0.0479          
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 0.061057        
+            Specificity : 0.975826        
+         Pos Pred Value : 0.118497        
+         Neg Pred Value : 0.951285        
+             Prevalence : 0.050532        
+         Detection Rate : 0.003085        
+   Detection Prevalence : 0.026038        
+      Balanced Accuracy : 0.518442        
+                                          
+       'Positive' Class : 1               
+                                          </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cm.tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction     0     1
+         0 25166  1341
+         1    68     2
+                                          
+               Accuracy : 0.947           
+                 95% CI : (0.9442, 0.9496)
+    No Information Rate : 0.9495          
+    P-Value [Acc &gt; NIR] : 0.968           
+                                          
+                  Kappa : -0.0022         
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 1.489e-03       
+            Specificity : 9.973e-01       
+         Pos Pred Value : 2.857e-02       
+         Neg Pred Value : 9.494e-01       
+             Prevalence : 5.053e-02       
+         Detection Rate : 7.525e-05       
+   Detection Prevalence : 2.634e-03       
+      Balanced Accuracy : 4.994e-01       
+                                          
+       'Positive' Class : 1               
+                                          </code></pre>
+</div>
+</div>
 </section>
 <section id="part-7" class="level2">
 <h2 class="anchored" data-anchor-id="part-7">Part 7</h2>
-<p>ROC plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lasso.probs <span class="ot">=</span> <span class="fu">predict</span>(lasso, test.X, <span class="at">s =</span> <span class="st">'lambda.min'</span>, <span class="at">type =</span> <span class="st">'response'</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>tree.probs <span class="ot">=</span> <span class="fu">predict</span>(smote_tree, test, <span class="at">type =</span> <span class="st">'prob'</span>)[,<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This ROC plot can help me tell NVO that the LASSO model ended up performing better than the Decision Tree model. Both are pretty close when it comes to their results and their placement to the baseline on the plot, but the LASSO curve is shown to be further away from the baseline, thus having a better predictive performance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">pty =</span> <span class="st">"s"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>lasso_roc <span class="ot">=</span> <span class="fu">roc</span>(test<span class="sc">$</span>Responded <span class="sc">~</span> lasso.probs,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">plot =</span> <span class="cn">TRUE</span>, <span class="at">print.auc =</span> <span class="cn">TRUE</span>, <span class="at">print.auc.x =</span> <span class="fl">0.3</span>, <span class="at">print.auc.y =</span> <span class="fl">0.35</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">"skyblue"</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">legacy.axes =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>tree_roc <span class="ot">=</span> <span class="fu">roc</span>(test<span class="sc">$</span>Responded <span class="sc">~</span> tree.probs,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">plot =</span> <span class="cn">TRUE</span>, <span class="at">print.auc =</span> <span class="cn">TRUE</span>, <span class="at">print.auc.x =</span> <span class="fl">0.3</span>, <span class="at">print.auc.y =</span> <span class="fl">0.28</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">"magenta"</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">legacy.axes =</span> <span class="cn">TRUE</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"LASSO"</span>, <span class="st">"Decision Tree"</span>),</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"skyblue"</span>, <span class="st">"magenta"</span>), <span class="at">lwd =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="part-8" class="level2">
 <h2 class="anchored" data-anchor-id="part-8">Part 8</h2>
-<p>Pick best performing model</p>
+<p>Precision-Recall Chart</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>prc <span class="ot">=</span> pROC<span class="sc">::</span><span class="fu">coords</span>(lasso_roc, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"precision"</span>, <span class="st">"recall"</span>))</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>prc <span class="sc">%&gt;%</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(recall <span class="sc">&gt;</span> <span class="fl">0.01</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> recall, <span class="at">y =</span> precision)) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"skyblue"</span>) <span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="st">'dashed'</span>) <span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Precision-Recall Curve"</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Recall / Sensitivity / True Positive Rate"</span>,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Precision (Response Rate"</span>) <span class="sc">+</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_clean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Cumulative Gain Chart</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>prob <span class="ot">=</span> lasso.probs <span class="ot">=</span> <span class="fu">predict</span>(lasso, test.X, <span class="at">s =</span> <span class="st">'lambda.min'</span>, <span class="at">type =</span> <span class="st">'response'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>test.cg <span class="ot">=</span> test <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Responded, prob) <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Responded =</span> <span class="fu">ifelse</span>(Responded <span class="sc">==</span> <span class="st">"1"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(prob)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct_dat =</span> <span class="fu">row_number</span>() <span class="sc">/</span><span class="fu">n</span>(),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">pct_pos =</span> <span class="fu">cumsum</span>(Responded)<span class="sc">/</span><span class="fu">sum</span>(Responded))</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>test.cg <span class="sc">%&gt;%</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pct_dat, <span class="at">y =</span> pct_pos)) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">color =</span> <span class="st">"skyblue"</span>) <span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cumulative Gains for LASSO Model"</span>,</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Percent of Data Contacted"</span>,</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent of Responders Captured"</span>) <span class="sc">+</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_clean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="part-9" class="level2">
 <h2 class="anchored" data-anchor-id="part-9">Part 9</h2>
-<p>Use 6+7 to describe how model should perform</p>
+<p>Using the charts from parts 6 and 7, the model that resulted as the most accurate was the Decision Tree model, whereas the LASSO model ended up with a higher Kappa. When looking at the Recall (<em>Sensitivity</em>) and Precision (<em>Pos Pred Value</em>), our business problem is trying to identify people who will respond and increase NVO’s response rate as well. While we do aim to not waste materials and effort, we also don’t want to miss out on opportunities. The two measures <strong>Sensitivity</strong> and <strong>Pos Pred Value</strong> will help us look at the trade-off we face here.</p>
+<p>The LASSO model has a higher sensitivity and precision despite a lower accuracy. However, its specificity is lower and its <code>Neg Pred Value</code> is higher. Both of them have small precisions (Pos Pred Value) which means our response rates could be lower. And their sensitivities are low, but data balancing allowed us to improve our model’s ability to learn rules that help us sense the positive class and miss out on opportunities. Both models have high specificity, showing that they can predict who is not gping to respond at a higher rate.</p>
+<p>We can see that much of the data being found using the LASSO model seems to perform better than the Decision Tree model. If using the data we have developed using the LASSO model data, we can assume that only 6% of our predictions will be correct and that 11.8% of our predicted responders are going to actually respond.</p>
+<p>The ROC plot also determines that the LASSO model performs better. Both are pretty close when it comes to their results and their placement to the baseline on the plot, but the LASSO curve is shown to be further away from the baseline, thus having a better predictive performance. With such numbers, we determine a bit better on whether or not we want to risk for more opportunities. Based off our numbers, it looks like we will go for more precision than opportunities due to such low numbers.</p>
 
 
 </section>
