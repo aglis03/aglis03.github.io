@@ -1,0 +1,221 @@
+---
+title: "Problem Set 4"
+author: "Annika G. Lee"
+date: "2023-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#| message: false
+rm(list = ls())
+library(tidyverse)
+library(caret)
+library(dummy)
+library(gamlr)
+library(rmarkdown)
+library(rpart)
+library(pROC)
+library(ggthemes)
+library(corrplot)
+library(AppliedPredictiveModeling)
+```
+
+
+## Part 1
+
+Classification is the right approach for NVO's problem. The reason for this is because we are trying to predict discrete values using this dataset. These values are whether or not a person will respond to a mailing. We are not focusing on the predicted numbers and their root mean squared errors like we do with regression for we are looking at the accuracy of the dataset. Our goal is to target and focus on individuals that will likely answer increase NVO's response rate.
+
+
+```{r}
+donors = read_csv("donors.csv")
+glimpse(donors)
+```
+
+
+## Part 2
+
+This classifier being built to identify potential donors for NVO will be better to use due to the accuracy it could develop. The reason for this is due to us having the ability to exclude features that may not have much significance to help make predictions in the dataset. As we select certain features to use and to remove, we can train and split the data up further to aim for the accuracy we hope to achieve. We get to focus on the separate classes within the data and not just all of the data within the dataset as a whole.
+
+
+```{r}
+summary(donors)
+```
+
+
+## Part 3
+
+The most important measures from the confusion matrix that I will use to evaluate the classifier performance will be `Accuracy`, `Sensitivity` (Recall), and `Post Pred Value` (Precision). Since our goal is to not miss out on individuals who will actually respond, being more accurate is not going to be the only outstanding factor of our model. Recall and Precision will allow us to see the percentages of actual positives and how often these positive predictions are correct. As we relate the importance of these measures to mailer response rate and maximizing donation opportunities, positive predictions are the individuals that are predicted to achieve our goal, respond to our mailings.
+
+I decided to not include the variables of `states`, `numberChildren`, `wealthRating`, and `isHomeowner` due to the large amount of missing values and lack of usefulness they have to our predicitions. For variables with only a few missing values, I decided to fill in those missing values with the median of their variable for quantitative variables or dropped the missing variables for categorical variables in the dataset.
+
+
+```{r}
+donors = donors %>%
+  rename(Responded = `respondedMailing`,
+         UrbanOrRural = `urbanicity`) %>%
+  mutate_at(vars(UrbanOrRural, socioEconomicStatus, gender, sweepstakesDonor, inHouseDonor, P3Donor, Responded), .funs=factor) %>%
+  mutate(age = ifelse(is.na(age), median(age, na.rm = TRUE), age)) %>%
+  mutate(incomeRating = ifelse(is.na(incomeRating), median(incomeRating, na.rm = TRUE), incomeRating)) %>%
+  select(-numberChildren, -wealthRating, -isHomeowner, -plannedGivingDonor, -state) %>%
+  drop_na()
+```
+
+```{r}
+summary(donors)
+```
+
+```{r}
+donors %>%
+  keep(is.numeric) %>%
+  cor() %>%
+  corrplot::corrplot.mixed()
+```
+
+```{r}
+# Partition our data
+set.seed(455)
+samp = caret::createDataPartition(donors$Responded, p = 0.7, list = FALSE)
+training = donors[samp,]
+test = donors[-samp,]
+```
+
+```{r}
+# Proportions of classes
+training %>%
+  select(Responded) %>%
+  table() %>%
+  prop.table()
+```
+
+```{r}
+# Downsampling 
+set.seed(4959)
+down_train = caret::downSample(x = select(training, -Responded),
+                               y = training$Responded,
+                               yname = "Responded")
+
+table(down_train$Responded)
+```
+
+```{r}
+# Smote
+library(performanceEstimation)
+set.seed(4959)
+smote_train = smote(Responded ~ .,
+                    data = training)
+
+table(smote_train$Responded)
+```
+
+
+## Part 4
+
+Lasso
+
+
+```{r}
+
+```
+
+
+## Part 5
+
+
+```{r}
+#Unbalanced
+ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 10)
+set.seed(123)
+unbalanced_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation,
+             data = training, 
+             method = "rpart",
+             metric = "Kappa",
+             trControl = ctrl,
+             tuneGrid = expand.grid(cp = seq(0.0, 0.3, 0.01)))
+
+plot(unbalanced_tree)
+```
+
+```{r}
+rpart.plot::rpart.plot(unbalanced_tree$finalModel)
+```
+
+```{r}
+#Downsampling
+ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 10)
+set.seed(123)
+down_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation, 
+             data = down_train, 
+             method = "rpart",
+             metric = "Kappa",
+             trControl = ctrl,
+             tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.005)))
+
+plot(down_tree)
+```
+
+```{r}
+rpart.plot::rpart.plot(down_tree$finalModel)
+```
+
+```{r}
+#Smote
+ctrl = caret::trainControl(method = "repeatedcv", number = 5, repeats = 10)
+set.seed(123)
+smote_tree = caret::train(Responded ~ totalGivingAmount + numberGifts + smallestGiftAmount + largestGiftAmount + yearsSinceFirstDonation, 
+             data = smote_train, 
+             method = "rpart",
+             metric = "Kappa",
+             trControl = ctrl,
+             tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.005)))
+
+plot(smote_tree)
+```
+
+```{r}
+rpart.plot::rpart.plot(smote_tree$finalModel)
+```
+
+
+## Part 6
+
+Evakuate performance of test data
+
+
+```{r}
+
+```
+
+
+## Part 7
+
+ROC plot
+
+
+```{r}
+
+```
+
+
+## Part 8
+
+Pick best performing model
+
+
+```{r}
+
+```
+
+
+## Part 9
+
+Use 6+7 to describe how model should perform
+
+
+```{r}
+
+```
+
