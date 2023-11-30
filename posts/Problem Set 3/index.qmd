@@ -206,4 +206,4 @@ data.frame(
 )
 ```
 
-From our results, we can see that the model with the highest RMSE is for our Testing data. This makes sense for our Testing data is not being trained and fitted as well like our Training data. Both the Cross-Validation and Testing RMSE values are quite close to one another.
+From our results, we can see that the model with the highest RMSE is for our Testing data. This makes sense for our Testing data is not being trained and fitted as well like our Training data. Both the Cross-Validation and Testing RMSE values are quite close to one another. 

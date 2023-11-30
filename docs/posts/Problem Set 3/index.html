@@ -224,7 +224,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="part-2" class="level2">
@@ -304,9 +305,9 @@ $ Tow_Bar           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">=</span> <span class="fu">bind_cols</span>(cars_num, cars_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Our dataset shows that each numeric feature has no missing values, therefore not needing to impute any median values into spots of missing values.</p>
+<p>Our dataset shows that each feature has no missing values. This mean we do not need to impute any values into spots of missing values.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cars_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Price            Age              KM               HP       
  Min.   : 4350   Min.   : 1.00   Min.   :     1   Min.   : 69.0  
@@ -315,19 +316,61 @@ $ Tow_Bar           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
  Mean   :10731   Mean   :55.95   Mean   : 68533   Mean   :101.5  
  3rd Qu.:11950   3rd Qu.:70.00   3rd Qu.: 87021   3rd Qu.:110.0  
  Max.   :32500   Max.   :80.00   Max.   :243000   Max.   :192.0  
-       CC            Weight     Quarterly_Tax   
- Min.   : 1300   Min.   :1000   Min.   : 19.00  
- 1st Qu.: 1400   1st Qu.:1040   1st Qu.: 69.00  
- Median : 1600   Median :1070   Median : 85.00  
- Mean   : 1577   Mean   :1072   Mean   : 87.12  
- 3rd Qu.: 1600   3rd Qu.:1085   3rd Qu.: 85.00  
- Max.   :16000   Max.   :1615   Max.   :283.00  </code></pre>
+                                                                 
+       CC            Weight     Quarterly_Tax    Mfg_Year    Fuel_Type   
+ Min.   : 1300   Min.   :1000   Min.   : 19.00   1998:392   CNG   :  17  
+ 1st Qu.: 1400   1st Qu.:1040   1st Qu.: 69.00   1999:441   Diesel: 155  
+ Median : 1600   Median :1070   Median : 85.00   2000:225   Petrol:1264  
+ Mean   : 1577   Mean   :1072   Mean   : 87.12   2001:192                
+ 3rd Qu.: 1600   3rd Qu.:1085   3rd Qu.: 85.00   2002: 87                
+ Max.   :16000   Max.   :1615   Max.   :283.00   2003: 75                
+                                                 2004: 24                
+ Met_Color     Color     Automatic Doors   Gears    Mfr_Guarantee
+ 0:467     Grey   :301   0:1356    2:  2   3:   2   0:848        
+ 1:969     Blue   :283   1:  80    3:622   4:   1   1:588        
+           Red    :278             4:138   5:1390                
+           Green  :220             5:674   6:  43                
+           Black  :191                                           
+           Silver :122                                           
+           (Other): 41                                           
+ BOVAG_Guarantee Guarantee_Period ABS      Airbag_1 Airbag_2 Airco  
+ 0: 150          3      :1274     0: 268   0:  42   0: 398   0:706  
+ 1:1286          6      :  77     1:1168   1:1394   1:1038   1:730  
+                 12     :  73                                       
+                 24     :   4                                       
+                 36     :   4                                       
+                 13     :   1                                       
+                 (Other):   3                                       
+ Automatic_airco Boardcomputer CD_Player Central_Lock Powered_Windows
+ 0:1355          0:1013        0:1122    0:603        0:629          
+ 1:  81          1: 423        1: 314    1:833        1:807          
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+ Power_Steering Radio    Mistlamps Sport_Model Backseat_Divider Metallic_Rim
+ 0:  32         0:1226   0:1067    0:1005      0: 330           0:1142      
+ 1:1404         1: 210   1: 369    1: 431      1:1106           1: 294      
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+ Radio_cassette Parking_Assistant Tow_Bar 
+ 0:1227         0:1432            0:1037  
+ 1: 209         1:   4            1: 399  
+                                          
+                                          
+                                          
+                                          
+                                          </code></pre>
 </div>
 </div>
 </section>
 <section id="part-3" class="level2">
 <h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
-<p>After looking at the variable <code>Price</code>, we can look at its distribution and can determine that <code>Price</code> is appropriate for a linear regression model for it does not have any missing values and does not have low variability within its data The distribution does have a slight right skew and a tiny amount of outliers. When lookong at our <em>Linear Regression</em> model that has been developed below, the <strong>Min</strong> and <strong>Max</strong> of the data set are not too different from one another and the same goes for <strong>1Q</strong> and <strong>3Q</strong> of the dataset as well. These are good signs of normal distribution that we want. The only slight concern is that the model’s <strong>Median</strong> is quite a far distance from 0.</p>
+<p>After looking at the variable <code>Price</code>, we can look at its distribution and can determine that <code>Price</code> is appropriate for a linear regression model for it does not have any missing values and does not have low variability within its data. The distribution is right-skewed and has a small amount of outliers. When looking at our <em>Linear Regression</em> model that has been developed below, the <strong>Min</strong> and <strong>Max</strong> of the data set are not too different from one another and the same goes for <strong>1Q</strong> and <strong>3Q</strong> of the dataset as well. These are good signs of normal distribution that we want. The only slight concern is that the model’s <strong>Median</strong> is quite a far distance from 0.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lm_Price <span class="ot">=</span> <span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> cars,</span>
@@ -346,7 +389,7 @@ Summary of sample sizes: 1436, 1436, 1436, 1436, 1436, 1436, ...
 Resampling results:
 
   RMSE      Rsquared   MAE     
-  1727.214  0.7826199  862.4754
+  1305.774  0.8656736  837.6482
 
 Tuning parameter 'intercept' was held constant at a value of TRUE</code></pre>
 </div>
@@ -432,8 +475,18 @@ Multiple R-squared:  0.9197,    Adjusted R-squared:  0.9163
 F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p>When creating a Histogram, we can take a look at the <code>Price</code> feature.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">histogram</span>(cars<span class="sc">$</span>Price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cars <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Price)) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bg =</span> <span class="st">"skyblue"</span>) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Selling Prices"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Selling price"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count of cars"</span>) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -441,8 +494,9 @@ F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="part-4" class="level2">
 <h2 class="anchored" data-anchor-id="part-4">Part 4</h2>
+<p>We can see that <code>Age</code> and <code>KM</code> have quite a strong negative relationship with <code>Price</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>caret<span class="sc">::</span><span class="fu">featurePlot</span>(<span class="fu">keep</span>(cars, is.numeric), cars<span class="sc">$</span>Price, <span class="at">plot =</span> <span class="st">"scatter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>caret<span class="sc">::</span><span class="fu">featurePlot</span>(<span class="fu">keep</span>(cars, is.numeric), cars<span class="sc">$</span>Price, <span class="at">plot =</span> <span class="st">"scatter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -451,9 +505,9 @@ F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="part-5" class="level2">
 <h2 class="anchored" data-anchor-id="part-5">Part 5</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cars <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggpairs</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cars <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggpairs</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -461,95 +515,44 @@ F-statistic: 267.2 on 59 and 1376 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="part-6" class="level2">
 <h2 class="anchored" data-anchor-id="part-6">Part 6</h2>
+<p>We can convert our categorical variables into dummy variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cars_dum <span class="ot">=</span> <span class="fu">dummy</span>(cars, <span class="at">int =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cars_num <span class="ot">=</span> cars <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">=</span> <span class="fu">bind_cols</span>(cars_num, cars_dum)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(cars_dum, cars_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cars_dum <span class="ot">=</span> <span class="fu">dummy</span>(cars, <span class="at">int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cars_num <span class="ot">=</span> cars <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">=</span> <span class="fu">bind_cols</span>(cars_num, cars_dum)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(cars_dum, cars_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Now we will partition our data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#DATA PARTITION </span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4532</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">=</span> <span class="fu">createDataPartition</span>(cars<span class="sc">$</span>Price, <span class="at">p=</span><span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>training <span class="ot">=</span> cars[samp, ]</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>testing <span class="ot">=</span> cars[<span class="sc">-</span>samp, ]</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#DATA PARTITION </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4532</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">=</span> <span class="fu">createDataPartition</span>(cars<span class="sc">$</span>Price, <span class="at">p=</span><span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>training <span class="ot">=</span> cars[samp, ]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>testing <span class="ot">=</span> cars[<span class="sc">-</span>samp, ]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="part-7" class="level2">
 <h2 class="anchored" data-anchor-id="part-7">Part 7</h2>
 <p>Pre-pruning sets limitations and boundaries to the tree and limits the overall complexity of it. Whereas post-pruning allows the tree to continue growing nwith justifications being made to it. As we justify which data to use, we get to tune and retrain the tree.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TRAIN/CONTROL DATA</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>train_ctrl <span class="ot">=</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"repeatedcv"</span>, <span class="at">number =</span> <span class="dv">20</span>, <span class="at">repeats =</span> <span class="dv">10</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">=</span> <span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> training,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> train_ctrl,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>)),</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">minsplit =</span> <span class="dv">1</span>, <span class="at">minbucket =</span> <span class="dv">1</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>             )</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>tree </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>CART 
-
-1007 samples
-  87 predictor
-
-No pre-processing
-Resampling: Cross-Validated (20 fold, repeated 10 times) 
-Summary of sample sizes: 956, 956, 955, 957, 956, 958, ... 
-Resampling results across tuning parameters:
-
-  cp    RMSE      Rsquared   MAE     
-  0.00  1374.770  0.8540659  1050.899
-  0.01  1372.104  0.8561630  1014.247
-  0.02  1627.509  0.7985036  1222.259
-  0.03  1644.343  0.7947001  1237.561
-  0.04  1727.284  0.7781115  1258.505
-  0.05  1729.339  0.7765759  1263.543
-  0.06  1729.339  0.7765759  1263.543
-  0.07  1729.339  0.7765759  1263.543
-  0.08  1729.339  0.7765759  1263.543
-  0.09  1729.339  0.7765759  1263.543
-  0.10  1729.339  0.7765759  1263.543
-
-RMSE was used to select the optimal model using the smallest value.
-The final value used for the model was cp = 0.01.</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ctrl <span class="ot">=</span> rpart<span class="sc">::</span><span class="fu">rpart.control</span>(<span class="at">cp=</span> <span class="fl">0.01</span>, </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">minbucket =</span> <span class="dv">7</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">maxdepth =</span> <span class="dv">30</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>training_regression_tree <span class="ot">=</span> <span class="fu">rpart</span>(Price <span class="sc">~</span> .,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> training,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"anova"</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">control =</span> ctrl)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">=</span> <span class="fu">predict</span>(training_regression_tree, training)</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>pred.rmse <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">RMSE</span>(<span class="at">pred =</span> pred, <span class="at">obs =</span> training<span class="sc">$</span>Price)</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Sample Mean:"</span>, <span class="fu">mean</span>(training<span class="sc">$</span>Price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Sample Mean: 10717.1559086395"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Sample Stdev:"</span>, <span class="fu">sd</span>(training<span class="sc">$</span>Price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Sample Stdev: 3625.85903560054"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Model RMSE:"</span>, pred.rmse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Model RMSE: 1292.32730208874"</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(training_regression_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>train_model <span class="ot">=</span> <span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> training,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">trControl =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.0001</span>)),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                   )</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(train_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(train_model<span class="sc">$</span>finalModel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -557,157 +560,82 @@ The final value used for the model was cp = 0.01.</code></pre>
 <h2 class="anchored" data-anchor-id="part-8">Part 8</h2>
 <p>When looking at our feature importance, we can determine that <code>Age</code>, <code>KM</code>, and <code>Weight</code> are the only three variables that have a difference in importance when compared to all other variables. We could possibly remove all other variables in the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(iml)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>tree_predictor <span class="ot">=</span> iml<span class="sc">::</span>Predictor<span class="sc">$</span><span class="fu">new</span>(tree, <span class="at">data =</span> training)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>tree_imp <span class="ot">=</span> iml<span class="sc">::</span>FeatureImp<span class="sc">$</span><span class="fu">new</span>(tree_predictor, <span class="at">loss =</span> <span class="st">"rmse"</span>, <span class="at">compare =</span> <span class="st">"ratio"</span>, <span class="at">n.repetitions =</span> <span class="dv">10</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(iml)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>tree_predictor <span class="ot">=</span> iml<span class="sc">::</span>Predictor<span class="sc">$</span><span class="fu">new</span>(train_model,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">data =</span> testing,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">y =</span> testing<span class="sc">$</span>Price)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>tree_imp <span class="ot">=</span> iml<span class="sc">::</span>FeatureImp<span class="sc">$</span><span class="fu">new</span>(tree_predictor, <span class="at">loss =</span> <span class="st">"rmse"</span>, <span class="at">compare =</span> <span class="st">"ratio"</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>We can see that <code>Age</code> has the highest importance when compared to other feautures in the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tree_imp<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tree_imp<span class="sc">$</span>results <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(importance <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               feature importance.05 importance importance.95 permutation.error
-1                  Age      3.598087   3.682139      3.728545          4544.057
-2               Weight      1.327703   1.337346      1.377178          1650.393
-3                   KM      1.126270   1.176474      1.208962          1451.864
-4                   HP      1.000000   1.000000      1.000000          1234.081
-5                   CC      1.000000   1.000000      1.000000          1234.081
-6        Quarterly_Tax      1.000000   1.000000      1.000000          1234.081
-7        Mfg_Year_1998      1.000000   1.000000      1.000000          1234.081
-8        Mfg_Year_1999      1.000000   1.000000      1.000000          1234.081
-9        Mfg_Year_2000      1.000000   1.000000      1.000000          1234.081
-10       Mfg_Year_2001      1.000000   1.000000      1.000000          1234.081
-11       Mfg_Year_2002      1.000000   1.000000      1.000000          1234.081
-12       Mfg_Year_2003      1.000000   1.000000      1.000000          1234.081
-13       Mfg_Year_2004      1.000000   1.000000      1.000000          1234.081
-14       Fuel_Type_CNG      1.000000   1.000000      1.000000          1234.081
-15    Fuel_Type_Diesel      1.000000   1.000000      1.000000          1234.081
-16    Fuel_Type_Petrol      1.000000   1.000000      1.000000          1234.081
-17         Met_Color_0      1.000000   1.000000      1.000000          1234.081
-18         Met_Color_1      1.000000   1.000000      1.000000          1234.081
-19         Color_Beige      1.000000   1.000000      1.000000          1234.081
-20         Color_Black      1.000000   1.000000      1.000000          1234.081
-21          Color_Blue      1.000000   1.000000      1.000000          1234.081
-22         Color_Green      1.000000   1.000000      1.000000          1234.081
-23          Color_Grey      1.000000   1.000000      1.000000          1234.081
-24           Color_Red      1.000000   1.000000      1.000000          1234.081
-25        Color_Silver      1.000000   1.000000      1.000000          1234.081
-26        Color_Violet      1.000000   1.000000      1.000000          1234.081
-27         Color_White      1.000000   1.000000      1.000000          1234.081
-28        Color_Yellow      1.000000   1.000000      1.000000          1234.081
-29         Automatic_0      1.000000   1.000000      1.000000          1234.081
-30         Automatic_1      1.000000   1.000000      1.000000          1234.081
-31             Doors_2      1.000000   1.000000      1.000000          1234.081
-32             Doors_3      1.000000   1.000000      1.000000          1234.081
-33             Doors_4      1.000000   1.000000      1.000000          1234.081
-34             Doors_5      1.000000   1.000000      1.000000          1234.081
-35             Gears_3      1.000000   1.000000      1.000000          1234.081
-36             Gears_4      1.000000   1.000000      1.000000          1234.081
-37             Gears_5      1.000000   1.000000      1.000000          1234.081
-38             Gears_6      1.000000   1.000000      1.000000          1234.081
-39     Mfr_Guarantee_0      1.000000   1.000000      1.000000          1234.081
-40     Mfr_Guarantee_1      1.000000   1.000000      1.000000          1234.081
-41   BOVAG_Guarantee_0      1.000000   1.000000      1.000000          1234.081
-42   BOVAG_Guarantee_1      1.000000   1.000000      1.000000          1234.081
-43  Guarantee_Period_3      1.000000   1.000000      1.000000          1234.081
-44  Guarantee_Period_6      1.000000   1.000000      1.000000          1234.081
-45 Guarantee_Period_12      1.000000   1.000000      1.000000          1234.081
-46 Guarantee_Period_13      1.000000   1.000000      1.000000          1234.081
-47 Guarantee_Period_18      1.000000   1.000000      1.000000          1234.081
-48 Guarantee_Period_20      1.000000   1.000000      1.000000          1234.081
-49 Guarantee_Period_24      1.000000   1.000000      1.000000          1234.081
-50 Guarantee_Period_28      1.000000   1.000000      1.000000          1234.081
-51 Guarantee_Period_36      1.000000   1.000000      1.000000          1234.081
-52               ABS_0      1.000000   1.000000      1.000000          1234.081
-53               ABS_1      1.000000   1.000000      1.000000          1234.081
-54          Airbag_1_0      1.000000   1.000000      1.000000          1234.081
-55          Airbag_1_1      1.000000   1.000000      1.000000          1234.081
-56          Airbag_2_0      1.000000   1.000000      1.000000          1234.081
-57          Airbag_2_1      1.000000   1.000000      1.000000          1234.081
-58             Airco_0      1.000000   1.000000      1.000000          1234.081
-59             Airco_1      1.000000   1.000000      1.000000          1234.081
-60   Automatic_airco_0      1.000000   1.000000      1.000000          1234.081
-61   Automatic_airco_1      1.000000   1.000000      1.000000          1234.081
-62     Boardcomputer_0      1.000000   1.000000      1.000000          1234.081
-63     Boardcomputer_1      1.000000   1.000000      1.000000          1234.081
-64         CD_Player_0      1.000000   1.000000      1.000000          1234.081
-65         CD_Player_1      1.000000   1.000000      1.000000          1234.081
-66      Central_Lock_0      1.000000   1.000000      1.000000          1234.081
-67      Central_Lock_1      1.000000   1.000000      1.000000          1234.081
-68   Powered_Windows_0      1.000000   1.000000      1.000000          1234.081
-69   Powered_Windows_1      1.000000   1.000000      1.000000          1234.081
-70    Power_Steering_0      1.000000   1.000000      1.000000          1234.081
-71    Power_Steering_1      1.000000   1.000000      1.000000          1234.081
-72             Radio_0      1.000000   1.000000      1.000000          1234.081
-73             Radio_1      1.000000   1.000000      1.000000          1234.081
-74         Mistlamps_0      1.000000   1.000000      1.000000          1234.081
-75         Mistlamps_1      1.000000   1.000000      1.000000          1234.081
-76       Sport_Model_0      1.000000   1.000000      1.000000          1234.081
-77       Sport_Model_1      1.000000   1.000000      1.000000          1234.081
-78  Backseat_Divider_0      1.000000   1.000000      1.000000          1234.081
-79  Backseat_Divider_1      1.000000   1.000000      1.000000          1234.081
-80      Metallic_Rim_0      1.000000   1.000000      1.000000          1234.081
-81      Metallic_Rim_1      1.000000   1.000000      1.000000          1234.081
-82    Radio_cassette_0      1.000000   1.000000      1.000000          1234.081
-83    Radio_cassette_1      1.000000   1.000000      1.000000          1234.081
-84 Parking_Assistant_0      1.000000   1.000000      1.000000          1234.081
-85 Parking_Assistant_1      1.000000   1.000000      1.000000          1234.081
-86           Tow_Bar_0      1.000000   1.000000      1.000000          1234.081
-87           Tow_Bar_1      1.000000   1.000000      1.000000          1234.081</code></pre>
+<pre><code>            feature importance.05 importance importance.95 permutation.error
+1               Age     3.1465977   3.253068      3.369671          4212.437
+2            Weight     1.1531487   1.171143      1.203610          1516.527
+3                KM     1.0826273   1.105717      1.116607          1431.806
+4    Metallic_Rim_0     1.0317436   1.079041      1.117105          1397.264
+5 Powered_Windows_0     1.0394016   1.045327      1.057137          1353.607
+6 Automatic_airco_0     1.0110262   1.030380      1.034653          1334.251
+7     Quarterly_Tax     1.0185878   1.023070      1.037765          1324.786
+8 Powered_Windows_1     0.9828574   1.009893      1.029864          1307.722
+9                HP     0.9926295   1.008777      1.014996          1306.278</code></pre>
 </div>
 </div>
 </section>
 <section id="part-9" class="level2">
 <h2 class="anchored" data-anchor-id="part-9">Part 9</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ctrl <span class="ot">=</span> rpart<span class="sc">::</span><span class="fu">rpart.control</span>(<span class="at">cp=</span> <span class="fl">0.01</span>, </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">minbucket =</span> <span class="dv">7</span>,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">maxdepth =</span> <span class="dv">30</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>regression_tree2 <span class="ot">=</span> <span class="fu">rpart</span>(Price <span class="sc">~</span> KM <span class="sc">+</span> Age <span class="sc">+</span> Weight,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> training,</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"anova"</span>,</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">control =</span> ctrl)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">=</span> <span class="fu">predict</span>(regression_tree2, training)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>pred.rmse <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">RMSE</span>(<span class="at">pred =</span> pred, <span class="at">obs =</span> training<span class="sc">$</span>Price)</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Sample Mean:"</span>, <span class="fu">mean</span>(training<span class="sc">$</span>Price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Sample Mean: 10717.1559086395"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Sample Stdev:"</span>, <span class="fu">sd</span>(training<span class="sc">$</span>Price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Sample Stdev: 3625.85903560054"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Model RMSE:"</span>, pred.rmse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Model RMSE: 1292.32730208874"</code></pre>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>train_new <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">select</span>(training, Age, Weight, KM, Metallic_Rim_0, Powered_Windows_0, Quarterly_Tax, Automatic_airco_0, HP, Powered_Windows_0, Price)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>new_tree <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> train_new,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">trControl =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.0001</span>)),</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(new_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(regression_tree2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(new_tree<span class="sc">$</span>finalModel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="part-10" class="level2">
 <h2 class="anchored" data-anchor-id="part-10">Part 10</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>test_predictions <span class="ot">=</span> <span class="fu">predict</span>(regression_tree2, <span class="at">newdata =</span> testing)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>test_rmse <span class="ot">=</span> <span class="fu">postResample</span>(<span class="at">pred =</span> test_predictions,</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">obs =</span> testing<span class="sc">$</span>Price)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>test_rmse</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>train_error <span class="ot">=</span> <span class="fu">postResample</span>(<span class="fu">predict</span>(new_tree, training), training<span class="sc">$</span>Price)[[<span class="st">"RMSE"</span>]]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>cv_error <span class="ot">=</span> <span class="fu">min</span>(new_tree<span class="sc">$</span>results<span class="sc">$</span>RMSE)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>test_error <span class="ot">=</span> <span class="fu">postResample</span>(<span class="fu">predict</span>(new_tree, testing), testing<span class="sc">$</span>Price)[[<span class="st">"RMSE"</span>]]</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Error Source"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Training"</span>, <span class="st">"Cross-Validation"</span>, <span class="st">"Testing"</span>),</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RMSE"</span> <span class="ot">=</span> <span class="fu">c</span>(train_error, cv_error, test_error)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        RMSE     Rsquared          MAE 
-1524.6855721    0.8265925 1077.5923760 </code></pre>
+<pre><code>      Error.Source      RMSE
+1         Training  929.0272
+2 Cross-Validation 1164.5327
+3          Testing 1264.3797</code></pre>
 </div>
 </div>
-<p>We can see from the training and testing of our dataset that the RMSE from the cross validation error with the most optimal model with the smallest complexity model is 1372.104. The RMSE for the testing data is 1495.690. We can see this due to our usage of less variables in when developing predictions with the testing data. Less variables means less accuracy to the model, which makes sense in this instance.</p>
+<p>From our results, we can see that the model with the highest RMSE is for our Testing data. This makes sense for our Testing data is not being trained and fitted as well like our Training data. Both the Cross-Validation and Testing RMSE values are quite close to one another.</p>
 
 
 </section>
