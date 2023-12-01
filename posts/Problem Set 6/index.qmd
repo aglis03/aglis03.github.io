@@ -1,0 +1,242 @@
+---
+title: 'Problem Set #6'
+author: "Annika G. Lee"
+date: "November 30, 2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(caret)
+library(performanceEstimation)
+library(pROC)
+library(rpart)
+library(rpart.plot)
+library(dummy)
+library(ada)
+```
+
+```{r}
+bank = read_csv("UniversalBank.csv")
+
+glimpse(bank)
+```
+
+Remove any unnecessary features, rename features, and change any categorical variables into factors. We can also change the variables of our target feature into **Positive** or **Negative**.
+```{r}
+bank = bank %>%
+  select(-ID, -`ZIP Code`, -Experience) %>%
+  rename(Loan = `Personal Loan`,
+         Securities = `Securities Account`,
+         CD = `CD Account`) %>%
+  mutate(Loan = ifelse(Loan == 1, "positive", "negtive")) %>%
+  mutate(Loan = factor(Loan)) %>%
+  mutate_at(vars(Education, Securities, CD, Online, CreditCard), .funs = factor)
+```
+
+Look for any missing values within the dataset.
+```{r}
+#Calculate percent of missing values for features
+missing_df = as.numeric(purrr::map(bank, ~mean(is.na(.)))) * 100
+
+#Assign values to data frame to easily view
+df = data.frame(PercentMissing = missing_df,
+                row.names = names(bank)) %>%
+  arrange(desc(PercentMissing))
+
+print(df)
+```
+
+We can see that our dataset does not have any missing values.
+
+
+## Part 1: Partition the Data
+```{r}
+set.seed(453)
+idx = createDataPartition(bank$Loan, p = 0.7, list = FALSE)
+train = bank[idx, ]
+test = bank[-idx, ]
+rm(idx)
+```
+
+Address the class imbalance.
+```{r}
+table(train$Loan)
+```
+
+We will use SMOTE to help reduce the large imbalance that is present. I will first start off by converting all factors into dummy variables and make sure that each has one of its category dummies removed.
+```{r}
+dum = select(train, -Loan) %>%
+  dummy(., int = TRUE) %>%
+  select(-Education_1)
+
+train.dum = keep(train, is.numeric) %>%
+  bind_cols(., dum)
+
+train.dum["Loan"] = train$Loan
+```
+
+```{r}
+smote_train = smote(Loan ~ .,
+                    data = train.dum,
+                    perc.over = 7,
+                    perc.under = 1.3)
+
+table(smote_train$Loan)
+```
+
+
+## Part 2: Decision Tree
+```{r}
+ctrl = caret::trainControl(method = 'cv', 
+                           number = 5,
+                           summaryFunction = twoClassSummary,
+                           classProbs = TRUE)
+
+set.seed(345)
+tree = train(Loan ~ .,
+            data = smote_train,
+            method = "rpart",
+            metric = "ROC",
+            trControl = ctrl,
+            tuneGrid = expand.grid(cp = seq(0.0, 0.01, 0.0001)),
+            control = rpart.control(minsplit = 1, minbucket = 1, maxdepth = 9)
+             )
+
+plot(tree)
+```
+
+```{r}
+rpart.plot(tree$finalModel)
+```
+
+
+## Part 3: Random Forest
+```{r}
+#| message: false
+#| warning: false
+set.seed(345)
+forest = train(Loan ~ .,
+               data = smote_train,
+               method = "rf",
+               metric = "ROC",
+               trControl = ctrl,
+               ntree = 500,
+               tuneGrid = expand.grid(.mtry = seq(2,8,1))
+               )
+
+plot(forest)
+```
+
+
+## Part 4: Gradient Boosting Machine
+```{r}
+boost_grid = expand.grid(
+  maxdepth = c(4, 5, 6, 7, 8),
+  iter = c(100, 150, 200, 250),
+  nu = 0.1
+)
+
+boost_ctrl = trainControl(method = "cv",
+                          number = 5,
+                          summaryFunction = twoClassSummary,
+                          classProbs = TRUE,
+                          allowParallel = TRUE)
+
+set.seed(345)
+boosted_trees = train(Loan ~ .,
+                      data = smote_train,
+                      trControl = boost_ctrl,
+                      tuneGrid = boost_grid,
+                      method = "ada",
+                      metric = "ROC")
+```
+
+```{r}
+plot(boosted_trees)
+```
+
+
+## Part 5: Compare Precision and Sensitivity
+```{r}
+dum = select(test, -Loan) %>%
+  dummy(., int = TRUE) %>%
+  select(-Education_1)
+
+test.dum = keep(test, is.numeric) %>%
+  bind_cols(., dum)
+
+test.dum["Loan"] = test$Loan
+```
+
+```{r}
+library(DALEX)
+tree_explain = DALEX::explain(
+  tree,
+  data = test.dum,
+  y = as.numeric(test.dum$Loan == "positive"),
+  type = "classification",
+  label = "Decision Tree"
+)
+
+forest_explain = DALEX::explain(
+  forest,
+  data = test.dum,
+  y = as.numeric(test.dum$Loan == "positive"),
+  type = "classification",
+  label = "Random Forest"
+)
+
+adaboost_explain = DALEX::explain(
+  boosted_trees,
+  data = test.dum,
+  y = as.numeric(test.dum$Loan == "positive"),
+  type = "classification",
+  label = "AdaBoost"
+)
+```
+
+```{r}
+# Model performance
+tree_perf = DALEX::model_performance(tree_explain)
+forest_perf = DALEX::model_performance(forest_explain)
+adaboost_perf = DALEX::model_performance(adaboost_explain)
+
+# Plot the Precision Recall Curve
+plot(tree_perf, forest_perf, adaboost_perf, geom = 'prc')
+```
+
+
+## Part 6: ROC Plot
+```{r}
+# Plot the Receiver Operator Characteristic
+plot(tree_perf, forest_perf, adaboost_perf, geom = 'roc')
+```
+
+```{r}
+# Compare the AUCs
+matrix(c("Model",
+         "Decision Tree",
+         "Random Forest",
+         "Adaboost",
+         "AUC",
+         round(tree_perf$measures$auc, 3),
+         round(forest_perf$measures$auc, 3),
+         round(adaboost_perf$measures$auc, 3)),
+       ncol = 2)
+```
+
+
+## Part 7: Importance of Partitioning Data
+
+Partitioning data allows us to avoid overfitting our data. As we split up our data into training and testing datasets, we have the opportunity to tune our data to fit the model. Whereas our testing data uses the model we have developed to make predictions on data that has not been touch and tuned. We also have the opportunity to develop a more efficient model with smaller data to use as a reference. Our training data will always be more accuate to the dataset but seeing that is common for our training data is the data that is not being tuned and used to develop a model. 
+
+
+## Part 8: How bagging/ensemble models can improve model accuracy/performance.
+
+Bagging aims to decrease variance, which can then lead to increased accuracy. Boosting aims to reduce the bias present in a model. This can also lead to increased accuracy. These are both a type of an ensemble model. These models combine the predictions that are being developed by multiple individual models to develop an accurate prediction. They can reduce variance, bias, and can learn from different models. We can possibly capture patterns being seen in the data and can rely on more than one model.
