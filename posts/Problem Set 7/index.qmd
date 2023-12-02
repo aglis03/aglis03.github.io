@@ -2,7 +2,7 @@
 title: 'Problem Set #7'
 author: "Annika G. Lee"
 date: "October 30, 2023"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Part 1
 
-LHBA's big-picture business problem is to use supervised data to help predict selling prices of homes.
+LHBA's big-picture business problem is to use supervised data to help predict selling prices of homes. What features are playing roles in determining such prices? How are the different datasets showing a significance when market conditions are always changing? 
 
 
 ## Part 2 
