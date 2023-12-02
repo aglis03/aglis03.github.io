@@ -1,13 +1,50 @@
 ---
 title: 'Problem Set #7'
 author: "Annika G. Lee"
-date: "2023-11-28"
-output: html_document
+date: "October 30, 2023"
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## Part 1
+
+LHBA's big-picture business problem is to use supervised data to help predict selling prices of homes.
+
+
+## Part 2 
+
+1. Are the locations of these homes also being included and used as a factor to determine predictions of selling prices in the datatset?
+
+2. How much does it cost to generally flip a home? What cost are involved and how much time is it going to take to complete the overall process?
+
+3. Upgrading features within a home is a common thing. With that being said, will updates on home upgrades also be included along with the dataset?
+
+
+## Part 3
+
+LHBA's business problem is the need to predict the selling prices of homes. As we approach this problem as a regression problem, we can use this supervised dataset to tune and develop a model to help with predicting home prices. We can view error and evaluate the model, also known as RMSE, to determine the performances of the developed predictions. This RMSE shows us the average distance between predicted values from the model to the actual values in the dataset. As we see error, we can determine whether we should use such models or if we need to continue tuning them. Error represents uncertainty within a model. As we build a model and find error, we can then end it off with visualizing such uncertainty. 
+
+
+## Part 4
+
+In order to help develop predictions for our business problem, we need to tune a model that best fits our data. As we aim to develop small values of error within our model, we can have that "data science" to rely on as we aim to make decisions and prediction of prices for homes.
+
+We will not be using these models determine absolute prices for there are some important features that affect the prices of homes that are not in the dataset. 
+
+These predictions will help use determine where and how we could possibly advertise certain homes. Finding a proper target audience that fits not just home features, but also income, community, and so many other features that do not revolve around a home is the easiest way to a successfully achieving the business problem. 
+
+
+## Part 5
+
+We will start off by making sure each of our steps are explained and that they connect and have relation to the target solution. Being able to understand the data being used is also important when trying to provide a solution. We will begin with deciding on which features we would like to have. Features such as house size, number of rooms, bathrooms, appliances, age of home, neighborhood, location, and crime rate would be perfect examples for providing our solution. As we rely on data, trying to get such desired features in our datasets would be the goal.
+
+We will determine what features and data is present and being covered and will then prepare our data. We will start by cleaning the data and remove and edit features we may find relevant to finding a solution and then create new datasets by combining data from multiple sources. We will then re-format our data in a way that will help provide our solution before building and tuning models that will then assess and evaluate such decisions.
+
+
+## Part 6
 
 ```{r}
 #| message: false
@@ -20,36 +57,127 @@ library(pROC)
 library(ggthemes)
 library(AppliedPredictiveModeling)
 library(performanceEstimation)
+library(dummy)
 ```
 
 ```{r}
-post_crisis = read_csv("PostCrisisCV.csv")
-glimpse(post_crisis)
+post = read_csv("PostCrisisCV.csv")
+pre = read_csv("PreCrisisCV.csv")
+on_market = read_csv("OnMarketTest-1.csv")
 ```
 
 ```{r}
-pre_crisis = read_csv("PreCrisisCV.csv")
-glimpse(pre_crisis)
+merged_data = merge(post, pre, all = TRUE)
+
+merged_fct = merged_data %>%
+  select(-Price, -Property, -LandValue, -BuildingValue, -Acres, -AboveSpace, -Basement, -Deck, -Baths, -Toilets, -Beds, -Rooms, -Age, -Car) %>%
+  mutate_all(.funs = factor)
+
+merged_num = merged_data %>%
+  select(Price, Property, LandValue, BuildingValue, Acres, AboveSpace, Basement, Deck, Baths, Toilets, Beds, Rooms, Age, Car)
+
+merged_data = bind_cols(merged_num, merged_fct)
 ```
 
 ```{r}
-on_market_test = read_csv("OnMarketTest-1.csv")
-glimpse(on_market_test)
+merged_data %>%
+  keep(is.numeric) %>%
+  cor() %>%
+  corrplot::corrplot(., method = "number", type = "lower", number.cex = 0.6, tl.cex = 0.7)
 ```
 
-## Part 1
+```{r}
+merged_data = merged_data %>%
+  select(-BuildingValue, -LandValue, -AboveSpace)
+```
 
-## Part 2 
-1. Are the locations of these homes also being included and used as a factor to determine predictions of selling prices in the datatset?
+```{r}
+merged_data %>%
+  ggplot(aes(Price)) +
+  geom_histogram(color = "black", bg = "skyblue") +
+  labs(title = "Distribution of Selling Prices",
+       x = "Selling price",
+       y = "Count of homes") +
+  theme_classic()
+```
 
-2. How much does it cost to generally flip a home? What cost are involved and how much time is it going to take to complete the overall process?
+```{r}
+merged_dum = dummy(merged_data, int = TRUE)
+merged_num = merged_data %>%
+  keep(is.numeric)
+merged_data = bind_cols(merged_num, merged_dum)
+rm(merged_dum, merged_num)
+```
 
-3. 
+```{r}
+#Partition Data
+set.seed(123)
+idx = createDataPartition(merged_data$Price, p = 0.8, list = FALSE)
+train = merged_data[idx, ]
+test = merged_data[-idx, ]
+rm(idx)
+```
 
-## Part 3
+```{r}
+train_model = train(Price ~ .,
+                   data = train,
+                   method = "rpart",
+                   trControl = trainControl(method = "cv", number = 10),
+                   tuneGrid = expand.grid(cp = seq(0.0, 0.01, 0.0001)),
+                   control = rpart.control(minbucket = 1)
+                   )
+plot(train_model)
+```
 
-## Part 4
+```{r}
+library(rpart.plot)
+rpart.plot(train_model$finalModel)
+```
 
-## Part 5
+```{r}
+library(iml)
+library(patchwork)
 
-## Part 6
+tree_predictor = iml::Predictor$new(train_model,
+                                    data = test,
+                                    y = test$Price)
+
+tree_imp = iml::FeatureImp$new(tree_predictor, loss = "rmse", compare = "ratio")
+plot(tree_imp)
+```
+
+```{r}
+tree_imp$results %>%
+  filter(importance > 1)
+```
+
+```{r}
+train_new = dplyr::select(train, Fireplaces_0, Toilets, Fireplaces_1, Baths, Acres, AC_0, Beds, Age, PoorCondition_0, Rooms, Price)
+
+new_tree = caret::train(Price ~ .,
+                        data = train_new,
+                        method = "rpart",
+                        trControl = trainControl(method = "cv", number = 10),
+                        tuneGrid = expand.grid(cp = seq(0.0, 0.01, 0.0001)),
+                        control = rpart.control(minbucket = 1)
+                        )
+plot(new_tree)
+```
+
+```{r}
+rpart.plot(new_tree$finalModel)
+```
+
+```{r}
+train_error = postResample(predict(new_tree, train), train$Price)[["RMSE"]]
+
+cv_error = min(new_tree$results$RMSE)
+
+test_error = postResample(predict(new_tree, test), test$Price)[["RMSE"]]
+
+data.frame(
+  "Error Source" = c("Training", "Cross-Validation", "Testing"),
+  "RMSE" = c(train_error, cv_error, test_error)
+)
+```
+
