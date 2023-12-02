@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Annika G. Lee">
-<meta name="dcterms.date" content="2023-11-28">
+<meta name="dcterms.date" content="2023-10-30">
 
 <title>Annika G. Lee - Problem Set #7</title>
 <style>
@@ -197,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 28, 2023</p>
+      <p class="date">October 30, 2023</p>
     </div>
   </div>
   
@@ -207,6 +207,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
+<section id="part-1" class="level2">
+<h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
+<p>LHBA’s big-picture business problem is to use supervised data to help predict selling prices of homes. What features are playing roles in determining such prices? How are the different datasets showing a significance when market conditions are always changing?</p>
+</section>
+<section id="part-2" class="level2">
+<h2 class="anchored" data-anchor-id="part-2">Part 2</h2>
+<ol type="1">
+<li><p>Are the locations of these homes also being included and used as a factor to determine predictions of selling prices in the datatset?</p></li>
+<li><p>How much does it cost to generally flip a home? What cost are involved and how much time is it going to take to complete the overall process?</p></li>
+<li><p>Upgrading features within a home is a common thing. With that being said, will updates on home upgrades also be included along with the dataset?</p></li>
+</ol>
+</section>
+<section id="part-3" class="level2">
+<h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
+<p>LHBA’s business problem is the need to predict the selling prices of homes. As we approach this problem as a regression problem, we can use this supervised dataset to tune and develop a model to help with predicting home prices. We can view error and evaluate the model, also known as RMSE, to determine the performances of the developed predictions. This RMSE shows us the average distance between predicted values from the model to the actual values in the dataset. As we see error, we can determine whether we should use such models or if we need to continue tuning them. Error represents uncertainty within a model. As we build a model and find error, we can then end it off with visualizing such uncertainty.</p>
+</section>
+<section id="part-4" class="level2">
+<h2 class="anchored" data-anchor-id="part-4">Part 4</h2>
+<p>In order to help develop predictions for our business problem, we need to tune a model that best fits our data. As we aim to develop small values of error within our model, we can have that “data science” to rely on as we aim to make decisions and prediction of prices for homes.</p>
+<p>We will not be using these models determine absolute prices for there are some important features that affect the prices of homes that are not in the dataset.</p>
+<p>These predictions will help use determine where and how we could possibly advertise certain homes. Finding a proper target audience that fits not just home features, but also income, community, and so many other features that do not revolve around a home is the easiest way to a successfully achieving the business problem.</p>
+</section>
+<section id="part-5" class="level2">
+<h2 class="anchored" data-anchor-id="part-5">Part 5</h2>
+<p>We will start off by making sure each of our steps are explained and that they connect and have relation to the target solution. Being able to understand the data being used is also important when trying to provide a solution. We will begin with deciding on which features we would like to have. Features such as house size, number of rooms, bathrooms, appliances, age of home, neighborhood, location, and crime rate would be perfect examples for providing our solution. As we rely on data, trying to get such desired features in our datasets would be the goal.</p>
+<p>We will determine what features and data is present and being covered and will then prepare our data. We will start by cleaning the data and remove and edit features we may find relevant to finding a solution and then create new datasets by combining data from multiple sources. We will then re-format our data in a way that will help provide our solution before building and tuning models that will then assess and evaluate such decisions.</p>
+</section>
+<section id="part-6" class="level2">
+<h2 class="anchored" data-anchor-id="part-6">Part 6</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -216,10 +245,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AppliedPredictiveModeling)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performanceEstimation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performanceEstimation)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dummy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>post_crisis <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"PostCrisisCV.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"PostCrisisCV.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 1657 Columns: 18
 ── Column specification ────────────────────────────────────────────────────────
@@ -229,32 +259,7 @@ dbl (18): Property, LandValue, BuildingValue, Acres, AboveSpace, Basement, D...
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(post_crisis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 1,657
-Columns: 18
-$ Property      &lt;dbl&gt; 3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 39…
-$ LandValue     &lt;dbl&gt; 18200, 15700, 18400, 16600, 18100, 25900, 23100, 35600, …
-$ BuildingValue &lt;dbl&gt; 81300, 67000, 91500, 88500, 75100, 88900, 159300, 110800…
-$ Acres         &lt;dbl&gt; 0.17, 0.15, 0.53, 0.15, 0.26, 0.30, 0.21, 0.32, 0.16, 0.…
-$ AboveSpace    &lt;dbl&gt; 892, 692, 1068, 1278, 939, 1073, 1136, 1500, 1270, 672, …
-$ Basement      &lt;dbl&gt; 0, 0, 350, 0, 200, 0, 750, 300, 350, 0, 600, 0, 0, 700, …
-$ Deck          &lt;dbl&gt; 364, 0, 0, 160, 192, 0, 100, 0, 0, 0, 48, 0, 0, 0, 0, 0,…
-$ Baths         &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 3, 1, 1, 1, 3, 1, 2, 1, 1, 1, 2, 2, 1,…
-$ Toilets       &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
-$ Fireplaces    &lt;dbl&gt; 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0,…
-$ Beds          &lt;dbl&gt; 2, 2, 3, 4, 3, 3, 2, 4, 4, 2, 4, 2, 3, 2, 2, 1, 3, 4, 2,…
-$ Rooms         &lt;dbl&gt; 3, 2, 2, 2, 2, 2, 4, 3, 2, 2, 2, 2, 4, 2, 2, 2, 3, 4, 3,…
-$ AC            &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,…
-$ Age           &lt;dbl&gt; 68.9, 53.8, 52.8, 92.9, 52.9, 13.9, 5.8, 37.8, 61.9, 56.…
-$ Car           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 400, 484, 0, 0, 0, 0, 440, 368, 0, 0, …
-$ PoorCondition &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
-$ GoodCondition &lt;dbl&gt; 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1,…
-$ Price         &lt;dbl&gt; 54175, 92589, 122040, 112289, 95544, 115146, 159569, 158…</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pre_crisis <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"PreCrisisCV.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pre <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"PreCrisisCV.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 1978 Columns: 18
 ── Column specification ────────────────────────────────────────────────────────
@@ -264,32 +269,7 @@ dbl (18): Property, LandValue, BuildingValue, Acres, AboveSpace, Basement, D...
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(pre_crisis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 1,978
-Columns: 18
-$ Property      &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1…
-$ LandValue     &lt;dbl&gt; 15200, 16100, 17900, 25400, 23000, 25900, 23000, 9700, 2…
-$ BuildingValue &lt;dbl&gt; 52400, 123300, 63900, 132400, 99800, 118100, 119100, 602…
-$ Acres         &lt;dbl&gt; 0.26, 0.28, 0.50, 0.26, 0.18, 0.29, 0.26, 0.13, 0.28, 0.…
-$ AboveSpace    &lt;dbl&gt; 695, 1054, 891, 1080, 1020, 1317, 1802, 720, 912, 1019, …
-$ Basement      &lt;dbl&gt; 0, 450, 0, 450, 500, 0, 360, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ Deck          &lt;dbl&gt; 0, 180, 180, 64, 0, 100, 0, 0, 0, 310, 0, 168, 120, 0, 0…
-$ Baths         &lt;dbl&gt; 1, 2, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1,…
-$ Toilets       &lt;dbl&gt; 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 1, 1, 0,…
-$ Fireplaces    &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1,…
-$ Beds          &lt;dbl&gt; 2, 3, 2, 3, 3, 3, 3, 2, 2, 3, 4, 4, 3, 3, 2, 3, 4, 3, 3,…
-$ Rooms         &lt;dbl&gt; 2, 2, 3, 2, 2, 2, 4, 2, 2, 2, 4, 4, 2, 2, 3, 2, 3, 3, 2,…
-$ AC            &lt;dbl&gt; 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
-$ Age           &lt;dbl&gt; 50.8, 30.8, 53.8, 30.9, 30.7, 16.7, 68.0, 54.7, 62.9, 48…
-$ Car           &lt;dbl&gt; 0, 0, 576, 330, 0, 400, 0, 0, 0, 0, 0, 462, 0, 0, 440, 0…
-$ PoorCondition &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
-$ GoodCondition &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0,…
-$ Price         &lt;dbl&gt; 74818, 137462, 56850, 137462, 131008, 139973, 141880, 69…</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>on_market_test <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"OnMarketTest-1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>on_market <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"OnMarketTest-1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 2000 Columns: 18
 ── Column specification ────────────────────────────────────────────────────────
@@ -299,52 +279,156 @@ dbl (18): Property, LandValue, BuildingValue, Acres, AboveSpace, Basement, D...
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(on_market_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">=</span> <span class="fu">merge</span>(post, pre, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>merged_fct <span class="ot">=</span> merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Price, <span class="sc">-</span>Property, <span class="sc">-</span>LandValue, <span class="sc">-</span>BuildingValue, <span class="sc">-</span>Acres, <span class="sc">-</span>AboveSpace, <span class="sc">-</span>Basement, <span class="sc">-</span>Deck, <span class="sc">-</span>Baths, <span class="sc">-</span>Toilets, <span class="sc">-</span>Beds, <span class="sc">-</span>Rooms, <span class="sc">-</span>Age, <span class="sc">-</span>Car) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(<span class="at">.funs =</span> factor)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>merged_num <span class="ot">=</span> merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Price, Property, LandValue, BuildingValue, Acres, AboveSpace, Basement, Deck, Baths, Toilets, Beds, Rooms, Age, Car)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">=</span> <span class="fu">bind_cols</span>(merged_num, merged_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  corrplot<span class="sc">::</span><span class="fu">corrplot</span>(., <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"lower"</span>, <span class="at">number.cex =</span> <span class="fl">0.6</span>, <span class="at">tl.cex =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">=</span> merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>BuildingValue, <span class="sc">-</span>LandValue, <span class="sc">-</span>AboveSpace)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Price)) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bg =</span> <span class="st">"skyblue"</span>) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Selling Prices"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Selling price"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count of homes"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>merged_dum <span class="ot">=</span> <span class="fu">dummy</span>(merged_data, <span class="at">int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>merged_num <span class="ot">=</span> merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">=</span> <span class="fu">bind_cols</span>(merged_num, merged_dum)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(merged_dum, merged_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Partition Data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">=</span> <span class="fu">createDataPartition</span>(merged_data<span class="sc">$</span>Price, <span class="at">p =</span> <span class="fl">0.8</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>train <span class="ot">=</span> merged_data[idx, ]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> merged_data[<span class="sc">-</span>idx, ]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(idx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train_model <span class="ot">=</span> <span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> train,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">trControl =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.0001</span>)),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                   )</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(train_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(train_model<span class="sc">$</span>finalModel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(iml)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>tree_predictor <span class="ot">=</span> iml<span class="sc">::</span>Predictor<span class="sc">$</span><span class="fu">new</span>(train_model,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">data =</span> test,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">y =</span> test<span class="sc">$</span>Price)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>tree_imp <span class="ot">=</span> iml<span class="sc">::</span>FeatureImp<span class="sc">$</span><span class="fu">new</span>(tree_predictor, <span class="at">loss =</span> <span class="st">"rmse"</span>, <span class="at">compare =</span> <span class="st">"ratio"</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tree_imp<span class="sc">$</span>results <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(importance <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 2,000
-Columns: 18
-$ Property      &lt;dbl&gt; 3636, 3637, 3638, 3639, 3640, 3641, 3642, 3643, 3644, 36…
-$ LandValue     &lt;dbl&gt; 15500, 20300, 20100, 4000, 10400, 7300, 16200, 2900, 165…
-$ BuildingValue &lt;dbl&gt; 73700, 69600, 56700, 28800, 39300, 41700, 38700, 34500, …
-$ Acres         &lt;dbl&gt; 0.160, 0.178, 0.223, 0.131, 0.152, 0.081, 0.152, 0.058, …
-$ AboveSpace    &lt;dbl&gt; 912, 768, 660, 865, 617, 768, 792, 918, 905, 704, 876, 9…
-$ Basement      &lt;dbl&gt; 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 298, 0,…
-$ Deck          &lt;dbl&gt; 0, 180, 0, 112, 0, 0, 0, 0, 0, 224, 328, 108, 510, 316, …
-$ Baths         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3,…
-$ Toilets       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1,…
-$ Fireplaces    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 3,…
-$ Beds          &lt;dbl&gt; 3, 2, 1, 2, 2, 2, 3, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 2, 3,…
-$ Rooms         &lt;dbl&gt; 2, 2, 3, 3, 2, 2, 2, 2, 3, 2, 2, 2, 3, 2, 3, 2, 3, 3, 4,…
-$ AC            &lt;dbl&gt; 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1,…
-$ Age           &lt;dbl&gt; 55.77808, 49.77260, 61.78082, 88.80000, 58.78082, 90.802…
-$ Car           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 591, 0, 0, 0, 0, 0, …
-$ PoorCondition &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
-$ GoodCondition &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1,…
-$ Price         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…</code></pre>
+<pre><code>           feature importance.05 importance importance.95 permutation.error
+1     Fireplaces_0     1.2207100   1.266226      1.299777          44498.53
+2          Toilets     1.0343090   1.126590      1.218834          39591.35
+3     Fireplaces_1     1.0670219   1.103266      1.111387          38771.70
+4            Baths     1.0094141   1.089840      1.218106          38299.86
+5            Acres     1.0474995   1.066549      1.115988          37481.37
+6             AC_0     1.0496945   1.061062      1.069745          37288.53
+7             Beds     1.0417803   1.054364      1.061769          37053.17
+8              Age     1.0238457   1.049559      1.082720          36884.28
+9  PoorCondition_0     1.0311803   1.032313      1.052531          36278.20
+10           Rooms     0.9649791   1.031915      1.103644          36264.25
+11        Property     1.0102540   1.026174      1.032801          36062.48
+12 GoodCondition_0     1.0181497   1.023707      1.041996          35975.78
+13        Basement     1.0124812   1.018716      1.023605          35800.39
+14             Car     1.0011205   1.004414      1.010416          35297.78</code></pre>
 </div>
 </div>
-<section id="part-1" class="level2">
-<h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
-</section>
-<section id="part-2" class="level2">
-<h2 class="anchored" data-anchor-id="part-2">Part 2</h2>
-<ol type="1">
-<li><p>Are the locations of these homes also being included and used as a factor to determine predictions of selling prices in the datatset?</p></li>
-<li><p>How much does it cost to generally flip a home? What cost are involved and how much time is it going to take to complete the overall process?</p></li>
-<li></li>
-</ol>
-</section>
-<section id="part-3" class="level2">
-<h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
-</section>
-<section id="part-4" class="level2">
-<h2 class="anchored" data-anchor-id="part-4">Part 4</h2>
-</section>
-<section id="part-5" class="level2">
-<h2 class="anchored" data-anchor-id="part-5">Part 5</h2>
-</section>
-<section id="part-6" class="level2">
-<h2 class="anchored" data-anchor-id="part-6">Part 6</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>train_new <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">select</span>(train, Fireplaces_0, Toilets, Fireplaces_1, Baths, Acres, AC_0, Beds, Age, PoorCondition_0, Rooms, Price)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>new_tree <span class="ot">=</span> caret<span class="sc">::</span><span class="fu">train</span>(Price <span class="sc">~</span> .,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> train_new,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">trControl =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.0001</span>)),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(new_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(new_tree<span class="sc">$</span>finalModel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>train_error <span class="ot">=</span> <span class="fu">postResample</span>(<span class="fu">predict</span>(new_tree, train), train<span class="sc">$</span>Price)[[<span class="st">"RMSE"</span>]]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>cv_error <span class="ot">=</span> <span class="fu">min</span>(new_tree<span class="sc">$</span>results<span class="sc">$</span>RMSE)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>test_error <span class="ot">=</span> <span class="fu">postResample</span>(<span class="fu">predict</span>(new_tree, test), test<span class="sc">$</span>Price)[[<span class="st">"RMSE"</span>]]</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Error Source"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Training"</span>, <span class="st">"Cross-Validation"</span>, <span class="st">"Testing"</span>),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RMSE"</span> <span class="ot">=</span> <span class="fu">c</span>(train_error, cv_error, test_error)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Error.Source     RMSE
+1         Training 28746.09
+2 Cross-Validation 34783.00
+3          Testing 36510.79</code></pre>
+</div>
+</div>
 
 
 </section>

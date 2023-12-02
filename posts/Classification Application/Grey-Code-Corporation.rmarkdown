@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+
 Grey Code Corporation (GCC) is a media and marketing company involved in magazine and book publishing and in television broadcasting. 
 GCC’s portfolio of home and family magazines has been a long-running strength, but it has expanded to become a provider of a spectrum of services (market research, communications planning, web site advertising, etc.) that can enhance its clients’ brands.
 
@@ -42,6 +43,7 @@ Features like `Income` and `HomeValue` both touch upon a customer's general affl
 Several features touch upon customer behaviors. Some of these features may be calculated from others, like `DollarsPerIssue`.
 
 
+
 ```{r message=FALSE}
 library(caret)
 library(gbm)
@@ -70,10 +72,12 @@ grey %>%
 ```
 
 
+
 Using the strong correlations above, we begin to see some possibly redundant numerical features.
 First, `TotalPaidOrders` and `TotalAmountPaid` are closely related but are at least different measures if the amount paid per order isn't always the same. But if average amount per order is all that matters, then we might omit one. Second, `MonthsSinceLastPayment` and `YearsSinceLastOrder`. One is measured in years, the other months and assuming that last payments coincide most of the time with last order, these two essentially measure the same thing. Not surprisingly, `MonthsSinceLastOrder` is closely correlated with `YearsSinceLastOrder`. Also `MonthsSinceLastOrder` and `MonthsSinceLastPayment`, and also `MonthsSinceExpire` and `MonthsSinceLastOrder`.
 Another is `ExpiredSubscriptions` and `PaidCashMagazines`, but those may be truly different measures.
 `RequestedCancellations` and `UnpaidMagazines` are strongly similar, and make since that customers may have unpaid accounts for subscriptions they're trying to cancel.
+
 
 
 ```{r}
