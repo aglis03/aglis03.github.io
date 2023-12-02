@@ -1,0 +1,215 @@
+---
+title: "Cumulative Gains and Lift"
+author: 'QMBE  3740: Data Mining'
+date: "Module: Classification Application"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE}
+library(caret)
+library(tidyverse)
+library(ggthemes)
+```
+
+```{r message=FALSE}
+# Read in the data and mutate some
+# predictors.
+grey = read_csv("Grey.csv") %>%
+  mutate_at(vars(DwellingType, Gender, Marital, ChildPresent,
+                 Occupation, HomeValue, MagazineStatus, LastPaymentType,
+                 GiftDonor), .funs = factor) %>%
+# Recode the target feature to be
+# consistent with how it was formatted
+# when training the random forest model.
+  mutate(Renewal = factor(ifelse(Renewal=="Yes", 1, 0)))
+
+# Reload the pre-trained and saved
+# random forest model for us to analyze.
+rf_model = readRDS("GCC_rf_model.rds")
+```
+
+```{r}
+# Randomly select a practice set of 10,000 customers.
+# We will use this as the "new" customers that we want
+# to sift through with marketing.
+set.seed(5832)
+idx = sample(nrow(grey), 10000)
+custs = grey[idx, ]
+rm(idx)
+```
+
+```{r}
+# Generate predicted probabilities of Renewal
+# and then compare with actual Renewal outcomes.
+custs$ProbRenewal = predict(rf_model, custs, type = "prob")[,"1"]
+custs = custs %>%
+  select(ProbRenewal, Renewal)
+head(custs, 12)
+```
+
+
+```{r}
+# Sort the data in descending order of
+# predicted probability of Renewal.
+# Then create count of customer.
+custs = custs %>%
+  arrange(desc(ProbRenewal)) %>%
+  mutate(CustCount = row_number()) %>%
+  select(CustCount, ProbRenewal, Renewal)
+custs
+```
+
+```{r}
+# Create classification cutoff data
+cut_offs = seq(0.01, 0.99, 0.01)
+# Create blank dataframe to store values.
+graph_data = data.frame(cutoff=NA, precision=NA, 
+                        recall=NA, accuracy=NA,
+                        specificity=NA)
+# Loop through cutoff values to
+# calculate a confusion matrix and 
+# associated meaures for each cutoff.
+for(c in cut_offs) {
+  class_label = factor(ifelse(custs$ProbRenewal > c, 1, 0), levels = c("0","1"))
+  cm = confusionMatrix(class_label, custs$Renewal, positive = "1")
+  graph_data = graph_data %>%
+    drop_na() %>%
+    add_row(cutoff = c,
+            precision = cm$byClass[["Pos Pred Value"]],
+            recall = cm$byClass[["Sensitivity"]],
+            accuracy = cm$overall[["Accuracy"]],
+            specificity = cm$byClass[["Specificity"]])
+}
+```
+
+```{r echo=FALSE}
+# Accuracy over different cutoffs
+p0 = graph_data %>% ggplot() +
+  geom_line(aes(x=cutoff, y=accuracy),
+            color = "#cb4b16", size = 1) +
+  labs(title = "Accuracy", x = "Cutoff Values", y = "Accuracy") +
+  ggthemes::theme_clean()
+
+
+colors = c("Precision"="#268bd2", "Recall"="#859900")
+p1 = graph_data %>% ggplot() +
+  geom_line(aes(x=cutoff, y=precision, color = "Precision"), size = 1) +
+  geom_line(aes(x=cutoff, y=recall, color = "Recall"), size = 1) +
+  geom_vline(xintercept = 0.75, linetype = "dotted", alpha = 0.7) +
+  labs(title = "Precision & Recall vs Cutoffs",
+       x = "Cutoff Value",
+       y = "Probability",
+       color = "") +
+  scale_color_manual(values = colors) +
+  ggthemes::theme_clean() +
+  theme(legend.position = "bottom")
+  
+  
+p2 = graph_data %>% ggplot() +
+  geom_line(aes(x = recall, y = precision),
+            color = "#dc322f", size = 1) +
+  labs(title = "Precision-Recall Curve",
+       x = "Recall/Sensitivity", y = "Precision") +
+  theme_clean()
+
+p3 = graph_data %>% ggplot() +
+  geom_line(aes(x = 1-specificity, y = recall),
+            color = "#d33682", size = 1) +
+  geom_abline(intercept = 0, slope = 1, color = "black", linetype="dashed", alpha = 0.6) +
+  labs(title = "ROC Plot", x = "1-Specificity", y = "Sensitivity/Recall") +
+  theme_clean()
+
+gridExtra::grid.arrange(p0, p1, p2, p3, nrow = 2)
+```
+
+```{r}
+# Calculate cumulative renewal cases.
+# Answers, "how many actual renewals are
+# contained in the top X customers?"
+custs = custs %>%
+  mutate(Renewal = as.numeric(levels(Renewal))[Renewal]) %>%
+  mutate(cumulative_renewals = cumsum(Renewal))
+custs
+```
+
+```{r}
+# Create a variable for the percent of customers
+# in the data represented by the top X customers.
+# Also calculate # of Renewals as a percent of total
+# Renewals in the 10,000 customers.
+custs = custs %>% 
+  mutate(percent_of_custs = CustCount/n()) %>%
+  mutate(percent_of_renewals = cumulative_renewals/sum(Renewal))
+custs
+```
+
+```{r}
+# Calculate and graph the cumulative gain
+# chart showing the relationship between
+# top % of customers marketed to and the
+# % of Renewals reached.
+custs %>%
+  ggplot(aes(x=percent_of_custs, y=percent_of_renewals)) +
+  geom_line(color = "#cb4b16", size = 1) +
+  geom_vline(xintercept = 0.1, linetype="dashed", alpha=0.5) +
+  annotate("text", x = 0.1, y=0.02, label = "0.1", fontface="bold") +
+  geom_hline(yintercept = 0.9, linetype="dashed", alpha=0.5) +
+  annotate("text", x = 0.0, y=0.9, label="0.9", fontface="bold") +
+  labs(title = "Cumulative Gain", 
+       x = "Top Percent of Customers/Data",
+       y = "Percent of Total Renewals") +
+  theme_clean()
+```
+
+```{r}
+# Calculate pre-Lift values. This includes
+# the proportion of the top X customers that
+# are Renewals and the baseline proportion in
+# the whole sample. And finally, we calculate
+# the lift as a ratio of propRenew/baseline.
+custs = custs %>%
+  mutate(propRenew = cumulative_renewals / CustCount) %>%
+  mutate(baseline = sum(Renewal)/n()) %>%
+  mutate(lift = propRenew/baseline)
+# View a subset of features to make it
+# easier to see.
+custs %>%
+  select(percent_of_custs, percent_of_renewals, ProbRenewal, propRenew, baseline, lift)
+```
+
+```{r}
+# Visualize the percentage of renewals in top X
+# versus the percentage of the sample marketing
+# was sent to.
+ggplot(custs, aes(x=percent_of_custs, y=propRenew)) +
+  geom_line(color = "aquamarine3", size=1) +
+  geom_hline(yintercept = 0.022, linetype="dashed", alpha=0.7) +
+  geom_vline(xintercept = 0.1, linetype="dashed", color="blue", alpha=0.4) +
+  annotate("text", x=0.1, y=0.207, label="0.207", fontface="bold") +
+  annotate("text", x=0.1, y=0.0, label = "0.1", fontface="bold") +
+  annotate("text", x=0.9, y=0.05, label="baseline=0.022") +
+  labs(title="%Renewal by %Customers",
+       x = "Top Percent of Customers/Data",
+       y = "% Renewals") +
+  theme_clean()
+```   
+
+```{r}
+# Finally we visualize the lift chart/graph
+ggplot(custs, aes(x=percent_of_custs, y=lift)) +
+    geom_line(color = "#268bd2", size = 1) +
+    geom_hline(yintercept = 1, linetype="dashed", alpha=0.6) +
+    labs(title = "Lift Chart for Renewal",
+         x = "Percent of Customers Contacted",
+         y = "Lift: # times more likely to find renewal") +
+    theme_clean()
+```
+
+
+
+
