@@ -1,3 +1,0 @@
-load("/Users/annikalee/Downloads/Git/aglis03.github.io/posts/Classification Application/GCC_gbm_model.rds")
-load("/Users/annikalee/Downloads/Git/aglis03.github.io/posts/Classification Application/GCC_rf_model.rds")
-load("/Users/annikalee/Downloads/Git/aglis03.github.io/posts/Classification Application/GCC_gbm_model.rds")

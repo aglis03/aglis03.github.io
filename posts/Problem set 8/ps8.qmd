@@ -1,0 +1,31 @@
+---
+title: 'Problem Set #8'
+author: "Annika G. Lee"
+date: "December 2, 2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(arules)
+library(knitr)
+library(kableExtra)
+library(ggthemes)
+```
+
+```{r}
+groceries = read_csv("groceries.csv")
+```
+
+## Part 1
+```{r}
+
+```
+
+## Part 2
+```{r}
+
+```
+
