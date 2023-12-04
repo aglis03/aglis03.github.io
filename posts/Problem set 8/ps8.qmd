@@ -15,17 +15,264 @@ library(kableExtra)
 library(ggthemes)
 ```
 
+# Part 1
+
+## Question 1
+
+a)  Actionable -\> Many patients go in for check-ups due to pain and are then typically prescribed medicine. As a result, the hospital could place their pharmacy on the first floor for easier access for patients who have to grab/pick-up their prescriptions, thus avoiding possible instances for more pain to arise.
+
+b)  Trivial -\> Individuals that come to the hospital with broken bones typically get surgery in order to heal the bone properly. This is common and is dealt with by an orthopedic doctor.
+
+c)  Inexplicable -\> A big inexplicable event that occurs is cancer. This disorder can develop and affect almost anyone is our society. There is also a variety of forms of cancer, thus making the complete knowledge on all cancer being incomplete. There is no official cure for cancer.
+
+## Question 2
+
+I grew up in the community of artistic gymnastics. This involvement of mine with this sport began when I was six and now I am 20 and currently an assistant gymnastics coach at my previous high school. An application of association rule that might be useful in gymnastics would be if a gymnast practices the uneven bars then they would need to purchase and own a pair of grips and rolls of tape. Grips are common to use on uneven bars to help gymnast gain better grip on the bar whereas tape is used to help cover any rips of skin that may occur on their hands as they continue to practice.
+
+## Question 3
+
 ```{r}
-groceries = read_csv("groceries.csv")
+groceries = read.transactions("groceries.csv", sep = ",")
 ```
 
-## Part 1
 ```{r}
-
+groceries
 ```
 
-## Part 2
 ```{r}
-
+summary(groceries)
 ```
 
+```{r}
+s = summary(groceries)
+```
+
+```{r}
+sizes = s@lengths
+
+print(sizes)
+```
+
+```{r}
+groceries_frequency = 
+  tibble(
+    Items = names(itemFrequency(groceries)),
+    Frequency = itemFrequency(groceries)
+  )
+```
+
+a)  The **10 least** frequently purchased items are...
+
+<!-- -->
+
+1.  baby food
+2.  sound storage medium
+3.  preservation products
+4.  bags
+5.  kitchen utensil
+6.  baby cosmetics
+7.  frozen chicken
+8.  toilet cleaner
+9.  make up remover
+10. salad dressing
+
+```{r}
+groceries_frequency %>%
+  arrange(Frequency) %>%
+  slice(1:10)
+```
+
+b)  Changing the **minimum rule** length to 3 generates 16 rules. Changing it to 4 generates 0 rules.
+
+```{r}
+groceryrules = 
+  apriori(groceries,
+          parameter = list(
+            support = 0.015,
+            confidence = 0.25,
+            minlen = 3
+          ) )
+```
+
+```{r}
+summary(groceryrules)
+```
+
+```{r}
+groceryrules %>%
+  sort(by = "confidence") %>%
+  inspect()
+```
+
+c)  Change the **minimum rule** length back to 2, produce a list of rules involving either **soda** or **whipped/sour cream**.
+
+```{r}
+groceryrules2 = 
+  apriori(groceries,
+          parameter = list(
+            support = 0.015,
+            confidence = 0.25,
+            minlen = 2
+          ) )
+```
+
+```{r}
+groceryrules2 %>%
+  sort(by = "confidence") %>%
+  inspect()
+```
+
+```{r}
+groceryrules2 %>%
+  subset(items %in% c("soda", "whipped/sour cream")) %>%
+  inspect()
+```
+
+# Part 2
+
+## 1.
+
+```{r}
+#| warning = false
+df = read.transactions('Market_Basket_Optimisation.csv', sep = ",")
+```
+
+## 2.
+
+There are a total of 7501 transactions in the data. There are 119 distinct items in the data.
+
+```{r}
+df
+```
+
+## 3.
+
+```{r}
+s = summary(df)
+```
+
+```{r}
+sizes = s@lengths
+print(sizes)
+```
+
+```{r}
+plot(sizes, 
+     lw = 6, col = "aquamarine",
+     main="Transaction Sizes",
+     xlab="# Items in Transaction",
+     ylab="Size Frequency")
+```
+
+## 4.
+
+```{r}
+library(tidyverse)
+df_frequency = 
+  tibble(
+    Items = names(itemFrequency(df)),
+    Frequency = itemFrequency(df)
+  )
+```
+
+The 10 **most** frequent items are...
+
+<!-- -->
+
+1.  mineral water
+2.  eggs
+3.  spaghetti
+4.  french fries
+5.  chocolate
+6.  green tea
+7.  milk
+8.  ground beef
+9.  frozen vegetables
+10. pancakes
+
+```{r}
+df_frequency %>%
+  arrange(desc(Frequency)) %>%
+  slice(1:10)
+```
+
+The 10 **least** frequent items are...
+
+<!-- -->
+
+1.  water spray
+2.  napkins
+3.  cream
+4.  bramble
+5.  tea
+6.  chutney
+7.  mashed potato
+8.  chocolate bread
+9.  dessert wine
+10. ketchup
+
+```{r}
+df_frequency %>%
+  arrange(Frequency) %>%
+  slice(1:10)
+```
+
+## 5.
+
+There is a total of 52 association rules that were generated.
+
+```{r}
+df.rules = 
+  apriori(df,
+          parameter = list(
+            support = 0.015,
+            confidence = 0.25,
+            minlen = 2
+          ) )
+```
+
+## 6.
+
+There are 43 rules with a length of 2 items & 9 rules with a length of 3 items, resulting in our total of 52 rules.
+
+```{r}
+summary(df.rules)
+```
+
+Here are the **top 12** association rules by **confidence**.
+
+```{r}
+df.rules %>%
+  sort(by = "confidence") %>%
+  head(n = 12) %>%
+  inspect()
+```
+
+Here are the **top 12** association rules by **lift**.
+
+```{r}
+df.rules %>%
+  sort(by = "lift") %>%
+  head(n = 12) %>%
+  inspect()
+```
+
+## 7.
+
+Here are the **top 10** association rules by **lift**, that **do not** include the **6 most frequent items**. We can see that there are only 3 available.
+
+```{r}
+df.rules %>%
+  subset(!items %in% c("mineral water", "eggs", "spaghetti", "french fries", "chocolate", "green tea")) %>%
+  sort(by = "lift") %>%
+  inspect()
+```
+
+## 8.
+
+A couple of rules I found the most interesting were the purchases of shrimp and chocolate, burgers and eggs, and pancakes and spaghetti. All of these combinations are quite uncommon to me for each pair has another purchased item from such a different food group (such as sweet and savory & breakfast and dinner). When it comes to retail context, I think that these items being purchased together were due to the commonness that each item has. Possibly putting common items such as all of these mentioned closer together could possibly result in more convenient grocery store run for customers. If buying shrimp for dinner, purchasing chocolate for dessert is a pretty common thought process. When buying burgers, purchasing eggs to eat the next morning for breakfast could easily be a reason for purchase. Lastly, when buying pancake mix for breakfast, buying spaghetti for dinner later i the day would save additional shopping and prepping later in time. All of these possibly scenarios were just a. few of the possible ones that could occur when relating them back to the retail context.
+
+```{r}
+df.rules %>%
+  inspect()
+```
