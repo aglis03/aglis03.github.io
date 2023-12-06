@@ -19,6 +19,8 @@ library(ggthemes)
 
 # Part 1: Segmenting Colleges
 
+## Exercise 1
+
 ```{r}
 #| message: false
 
@@ -27,36 +29,239 @@ scale0 = function(x) {
 }
 
 colleges = read_csv("college.csv") %>%
-  filter(state == "IN") %>%
-  column_to_rownames(var = "name") %>%
+  filter(state == "IN") %>% #only schools in Indiana
+  column_to_rownames(var = "name") %>% #make college name into row name
   select(faculty_salary_avg, tuition) %>%
   mutate_all(.funs = scale0)
 ```
 
-## Exercise 1
+### Check for missing Values
 
 ```{r}
+sapply(colleges, function(x) mean(is.na(x)))
+```
 
+### Cluster Plot
+
+```{r}
+IN_cluster = kmeans(colleges,
+                    centers = 3,
+                    nstart = 25)
+
+factoextra::fviz_cluster(IN_cluster, colleges, repel = TRUE)
+```
+
+## Exercise 2
+
+When it comes to two possible optimal values for k for the clustering problem from Exercise 1, I want to look at the values of 5 and 6. When using the kmeans total within sum of squares method, average silhouette width method, and the gap statistic method, we found possible values of: 3, 4, 5, 6, 7, and 9. We are already 3 in our above example and I do think that 9 is going to be too large. So I decided to go with the 4 and 6 since they were present in the group of the remaining values for the optimal number of clusters.
+
+```{r}
+factoextra::fviz_nbclust(colleges, kmeans, method = "wss")
 ```
 
 ```{r}
-
+factoextra::fviz_nbclust(colleges, kmeans, method = "silhouette")
 ```
 
 ```{r}
+factoextra::fviz_nbclust(colleges, kmeans, method = "gap_stat")
+```
 
+## Exercise 3
+
+### Cluster Plot w/ kmeans of 4
+
+```{r}
+kmean_cluster1 = kmeans(colleges,
+                    centers = 4,
+                    nstart = 25)
+
+factoextra::fviz_cluster(kmean_cluster1, colleges, repel = TRUE)
+```
+
+### Cluster Plot w/ kmeans of 6
+
+```{r}
+kmean_cluster2 = kmeans(colleges,
+                    centers = 6,
+                    nstart = 25)
+
+factoextra::fviz_cluster(kmean_cluster2, colleges, repel = TRUE)
 ```
 
 # Part 2: Segmenting the Cereal Market
 
+## Exercise 4
 
+```{r}
+cereal = read_csv("Cereals.csv") %>%
+  column_to_rownames(var = "name") %>% #make cereal name into row name
+  select(-mfr, -type, -weight, -shelf, -cups, -rating) %>% # drop unwanted
+  drop_na() %>% # drop missing values
+  mutate_all(.funs = scale0)
+```
+
+### Check for Missing Values
+
+```{r}
+sapply(cereal, function(x) mean(is.na(x)))
+```
+
+### Find Optimal Values for kmeans
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "wss")
+```
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "silhouette")
+```
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "gap_stat")
+```
+
+## Exercise 5
+
+### Cluster Centers
+
+```{r}
+cereals_cluster = kmeans(cereal, 
+                         centers = 6, 
+                         nstart = 25)
+
+cereal = cereal %>%
+  mutate(cluster = cereals_cluster$cluster)
+
+centers = cereals_cluster$centers %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "cluster")
+
+centers
+```
+
+```{r}
+ggplot(centers) +
+  geom_point(aes(x = scale0(sugars),
+                 y = scale0(calories),
+                 color = factor(cluster)),
+             size = 4.5) +
+  geom_vline(xintercept = 0, linetype = 'dashed', alpha = 0.7) +
+  geom_hline(yintercept = 0, linetype = 'dashed', alpha = 0.7) +
+  labs(title = "Calories vs. Sugar by Cluster Center",
+       x = "Sugars", y = "Calories") +
+  theme_classic()
+```
+
+## Exercise 6
+
+Based on the location of the cluster centers in Exercise 5, we can give each cluster an intuitive name. 
+
+**Cluster 1** is average calorie - above average sugar.
+
+**Cluster 2** is above average calorie - below average sugar. 
+
+**Cluster 3** is high calorie - high sugar. 
+
+**Cluster 4** is low calorie - below average sugar. 
+
+**Cluster 5** is below average calorie - low sugar. 
+
+**Cluster 6** is above average calorie - high sugar.
 
 
 # Part 3: Segmenting Bathsoap Customers
 
+## Exercise 7
+```{r}
+bathsoap = read_csv("BathSoapHouseHold.csv") %>%
+  select(CHILD, `Affluence Index`) %>%
+  drop_na() %>% # drop missing values
+  mutate_all(.funs = scale0)
+```
+
+### Check for Missing Values
+
+```{r}
+sapply(bathsoap, function(x) mean(is.na(x)))
+```
+
+### Find Optimal Values for kmeans
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "wss")
+```
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "silhouette")
+```
+
+```{r}
+fviz_nbclust(cereal, kmeans, method = "gap_stat")
+```
+
+When looking at our three different methods used to see optimal values of kmeans, values such as 4, 6, 8, and 10 appear. I think the best option out of these would be 6 as the value of kmeans.
+
+## Exercise 8
+
+### Cluster Plot w/ kmeans of 6
+```{r}
+bathsoap_cluster = kmeans(bathsoap,
+                    centers = 6,
+                    nstart = 25)
+
+factoextra::fviz_cluster(bathsoap_cluster, bathsoap)
+```
+
+**Cluster 1** represents below average affluence index and below average number of children. These customers have a smaller sized family but also have less capability to keep spending. These customers would be the riskiest for they will not be purchasing as much soap compared to others.
+
+**Cluster 2** represents about average affluence index and above average number of children. These customers have a larger sized family but also have an average amount of capability to keep spending.
+
+**Cluster 3** represents above average affluence index and above average number of children. These customers have a larger sized family but also have more capability to keep spending. These customers would be the safest for they will need to purchase more soap and have the ability to.
+
+**Cluster 4** represents above average affluence index and below average number of children. These customers have a smaller sized family but also have more capability to keep spending. These customers can purchase soap but won't need to as much.
+
+**Cluster 5** represents about average affluence index and below average number of children. These customers have a smaller sized family but also have more capability to keep spending.
+
+**Cluster 6** represents below average affluence index and above average number of children. These customers have a smaller sized family but also have less capability to keep spending. These customers won't need to buy much soap and probably won't buy as much due to their smaller capability.
 
 
+## Exercise 9
+
+### Value and Total Volume
+```{r}
+bathsoap2 = read_csv("BathSoapHouseHold.csv") %>%
+  select(Value, `Total Volume`) %>%
+  drop_na() %>% # drop missing values
+  mutate_all(.funs = scale0)
+```
+
+```{r}
+fviz_nbclust(bathsoap2, kmeans, method = "wss")
+```
+
+```{r}
+fviz_nbclust(bathsoap2, kmeans, method = "silhouette")
+```
+
+```{r}
+fviz_nbclust(bathsoap2, kmeans, method = "gap_stat")
+```
+
+```{r}
+bathsoap_cluster2 = kmeans(bathsoap2,
+                    centers = 2,
+                    nstart = 25)
+
+factoextra::fviz_cluster(bathsoap_cluster2, bathsoap2)
+```
 
 
-
+```{r}
+bathsoap2 %>%
+  mutate(cluster = bathsoap_cluster2$cluster) %>%
+  group_by(cluster) %>%
+  summarise_at(vars(Value, `Total Volume`), funs(mean))
+```
+We can see that **Cluster 1** has the highest average `Value` and also represents the largest purchasing `Total Volume`. Since these both come from the same cluster, we can assume that cluster 1 is the safest for it has above average total volume and above average value.
 
