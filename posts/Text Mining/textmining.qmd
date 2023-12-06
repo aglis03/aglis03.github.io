@@ -1,7 +1,7 @@
 ---
-title: "Apple Phone Reviews"
-author: "QMBE 3740: Data Mining"
-date: "Module: Text Mining"
+title: "Text Mining Problem Set"
+author: "Annika G. Lee"
+date: "December 3, 2023"
 output: pdf_document
 ---
 
@@ -22,33 +22,27 @@ In this problem set, we'll use Amazon reviews on Apple smart phones to measure s
 
 After prepping the data, we will attempt to help solve a couple of business problems.
 
-1. The customer satisfaction team would like to see a dashboard of customer sentiment over time for each of the designated iPhone products. So we will try to provide some measure of sentiment from the reviews (say monthly) and show a time series graph of the data over time. Additionally, the average star rating of reviews in a given period may also be a measure of sentiment and so we will include this as well.  Customer satisfaction teams can then look at the graphs to identify trends, dips, spikes, and divergences between sentiment and star-rating.
-2. The second task will be to use the reviews to identify key words that describe reviews and the distinct iPhone models. We will attack the problem from several angles, all by calculating TF-IDF statistics on batches of words.
-A. We will use tf-idf score to identify the top 10 words describing each individual review and then keep only those words. Then we will aggregate the results of for each interview for a given product by finding the 10 most popular individual-review keywords. This approach will show us the most popular keywords within product.
-B. Instead of aggregating the TF-IDF selected words from each review by counting/summing, we can calculate TF-IDF values of the individual-review top words by product. This approach will help find those review key words which are most important for each product.
-C. Finally, we could calculate TF-IDF values treating all the review-words for a single product as one big bag-of-words. This approach will yield a slightly different set of words.
+1.  The customer satisfaction team would like to see a dashboard of customer sentiment over time for each of the designated iPhone products. So we will try to provide some measure of sentiment from the reviews (say monthly) and show a time series graph of the data over time. Additionally, the average star rating of reviews in a given period may also be a measure of sentiment and so we will include this as well. Customer satisfaction teams can then look at the graphs to identify trends, dips, spikes, and divergences between sentiment and star-rating.
+2.  The second task will be to use the reviews to identify key words that describe reviews and the distinct iPhone models. We will attack the problem from several angles, all by calculating TF-IDF statistics on batches of words. A. We will use tf-idf score to identify the top 10 words describing each individual review and then keep only those words. Then we will aggregate the results of for each interview for a given product by finding the 10 most popular individual-review keywords. This approach will show us the most popular keywords within product. B. Instead of aggregating the TF-IDF selected words from each review by counting/summing, we can calculate TF-IDF values of the individual-review top words by product. This approach will help find those review key words which are most important for each product. C. Finally, we could calculate TF-IDF values treating all the review-words for a single product as one big bag-of-words. This approach will yield a slightly different set of words.
 
 ```{r message=FALSE}
-reviews = read_csv("./data_used/20191226-reviews.csv") %>%
+reviews = read_csv("20191226-reviews.csv") %>%
   rownames_to_column(var = "review.ID") %>%
   select(-name, -verified, -title)
 ```
 
 ```{r message=FALSE}
-items = read_csv("./data_used/20191226-items.csv") %>%
+items = read_csv("20191226-items.csv") %>%
   select(asin, brand, title)
 ```
 
-A great deal of data cleaning and preparation is required for good text analysis.
-We first merge the data sets by the product ID "asin" which attaches product name and features to each review in the data.
-Then we begin to filter out for only apple branded products and then finally those with "iPhone" in the product name.
-Looking that the `body` feature we have the text of each review.
-It is clear that a great variety of product name and formatting exists.
-However, there are some common patterns we can leverage using regular expressions.
+A great deal of data cleaning and preparation is required for good text analysis. We first merge the data sets by the product ID "asin" which attaches product name and features to each review in the data. Then we begin to filter out for only apple branded products and then finally those with "iPhone" in the product name. Looking that the `body` feature we have the text of each review. It is clear that a great variety of product name and formatting exists. However, there are some common patterns we can leverage using regular expressions.
 
-1. We know we're looking at Apple products, so we don't need the word "Apple" in the product name and the pattern "Apple " shows up in the product names, and so we replace it with an empty string to remove it.
-2. The second patter that we become aware of is that the product name is mentioned and then specific attributes of a model (like storage size, etc.) is placed after a comma. We don't wish to distinguish these, so will use a regular expression pattern "^[^,]*" meant to grab us any set of character and numbers from the beginning of the product name up to the comma.
-3. We are going to try and look at sentiment over time, and so we will process the date of each review as a date datatype and then extract the month-year form. This way we can aggregate all reviews for a product within a particular month.
+1.  We know we're looking at Apple products, so we don't need the word "Apple" in the product name and the pattern "Apple" shows up in the product names, and so we replace it with an empty string to remove it.
+2.  The second patter that we become aware of is that the product name is mentioned and then specific attributes of a model (like storage size, etc.) is placed after a comma. We don't wish to distinguish these, so will use a regular expression pattern "[^1]\*" meant to grab us any set of character and numbers from the beginning of the product name up to the comma.
+3.  We are going to try and look at sentiment over time, and so we will process the date of each review as a date datatype and then extract the month-year form. This way we can aggregate all reviews for a product within a particular month.
+
+[^1]: \^,
 
 ```{r}
 apple_reviews = left_join(reviews, items, by = "asin") %>%
@@ -69,11 +63,8 @@ apple_reviews = left_join(reviews, items, by = "asin") %>%
 apple_reviews %>%
   count(product) 
 ```
-Above we can see the list of iPhone products and realize that a lot of cleaning still remains to be donde.
-1. Remove storage size references, like any string of numbers starting after a space and followed by "GB".
-2. Remove leading text like "Verizon Prepaid"...
-3. Remove other text which follows a size reference (everything after GB).
-4. Then remove other things occurring rarely, but which are problematic.
+
+Above we can see the list of iPhone products and realize that a lot of cleaning still remains to be done. 1. Remove storage size references, like any string of numbers starting after a space and followed by "GB". 2. Remove leading text like "Verizon Prepaid"... 3. Remove other text which follows a size reference (everything after GB). 4. Then remove other things occurring rarely, but which are problematic.
 
 ```{r}
 apple_reviews = apple_reviews %>%
@@ -87,6 +78,7 @@ apple_reviews = apple_reviews %>%
 apple_reviews %>%
   count(product, sort = TRUE)
 ```
+
 The scrubbed product list is now shown above. The product names are much cleaner and follow a similar naming convention. We're now ready to start analyzing the review text.
 
 We start by filtering so that we retain only reviews about a select batch of iPhone models. It is these models we wish to assess the market thoughts and sentiment.
@@ -101,7 +93,7 @@ apple_reviews %>%
   count(product, sort = TRUE)
 ```
 
-# 1. View Sentiment vs. Rating Over Time
+## 1. View Sentiment vs. Rating Over Time
 
 Our first
 
@@ -142,6 +134,7 @@ review.words = review.words %>%
 Now that we're down to just our bag-of-words for each review, lets apply the "afinn" sentiment lexicon. After getting a sentiment score for each word in each review, we will calculate the average sentiment for each review by using the mean function on `value` when grouped by review.
 
 ```{r}
+library(textdata)
 sent_words = get_sentiments("afinn")
 review.sentiments = review.words %>%
   inner_join(sent_words, by = "word") %>%
@@ -157,7 +150,7 @@ Now that we've scored each review with a sentiment, we can aggregate all the rev
 ```{r}
 sentiment_overtime = review.sentiments %>%
   group_by(product, ym) %>%
-  summarize(sentiment = mean(sentiment),
+  summarise(sentiment = mean(sentiment),
             rating = mean(rating))
 ```
 
@@ -174,14 +167,19 @@ sentiment_overtime %>%
   theme_clean()
 ```
 
+### A.
+
+When looking at the relationship between rating and sentiment over time, we can see how majority of the trends seems to follow one another. This type of behavior suggests a positive correlation for us to to view and use. This type of similar behavior allows us to see that customers are mainly expressing their sentiments in an accurte format in their ratings. It makes sense that these two trends result in similar behaviors. It is common to see high sentiment with high ratings, whereas low sentiment with low ratings.
+
+There are some instances when **divergence** between sentiment and rating do take place. The biggest instance of this occurs in IPhone 8 Plus. This behavior can raise many questions. Possible reasons such as outliers, bias, or aspects not covered in the rating scale may be present. This creates room for uncertainty, therefore unanswered questions.
+
 ## 2. View Important Words for Each Product
 
 We will use TF-IDF measures to identify key words for a review.
 
-### Part A: Calculate top TF-IDF Words for each Review
+#### Part A: Calculate top TF-IDF Words for each Review
 
-We will set individual reviews as our "document" level, so that term frequency is with respect to a review and inverse-document frequency across all reviews.
-Note that each review is uniquely identified by `review.ID`.
+We will set individual reviews as our "document" level, so that term frequency is with respect to a review and inverse-document frequency across all reviews. Note that each review is uniquely identified by `review.ID`.
 
 ```{r}
 tfidf = review.words %>%
@@ -209,7 +207,6 @@ topwords = reviews.tfidf %>%
   count(product, word)
 ```
 
-
 ```{r echo=FALSE}
 topwords %>%
   arrange(desc(n)) %>%
@@ -222,6 +219,7 @@ topwords %>%
   labs(x = NULL, y = "N") +
   facet_wrap(~product, ncol = 3, scales = "free") +
   coord_flip()
+
 ```
 
 ```{r}
@@ -265,3 +263,13 @@ product.tfidf %>%
   facet_wrap(~product, ncol = 3, scales = "free") +
   coord_flip()
 ```
+
+### B.
+
+When using the keyword plots for the first method, we can see quite a few positive words. The top word for a few of the products seems to be battery. This makes sense since a phone's battery is a big factor that customers take into consideration when purchasing products.
+
+When we filter out the good reviews, such as 4 and 5 star reviews, a lot of the words are now more associated on the negative side. We can see words such returned and scratches.
+
+For the second method, we can see keywords that occur across reviews within a specific product. Each product has different keywords being presented and it shows how different each product may be from one another. For example, for the IPhone X, the top keyword is **face recognition**. We can see an increase in gb from product as well as the keywords for certain gb increases in number. This makes sense for products continuously have new advancements done to them as the next product releases.
+
+When it comes to the general theme of the keywords, we can assume that many of the problems people may have on these products depends on the external and internal problems t hat may occur to the phone. Development of features on products and storage is also something we can see is increased within ratings. Overall, we see how important factors regarding such keywords to features, updates and changes to phones, battery life, and compatibility are some of the main topics being discussed in ratings. When marking and developing ideas and coming up with recommendation, these such factors could positively increase customer engagement and ratings significantly.
