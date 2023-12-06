@@ -14,7 +14,7 @@ library(knitr)
 library(kableExtra)
 library(ggthemes)
 ```
-
+ 
 # Part 1
 
 ## Question 1
@@ -133,7 +133,6 @@ groceryrules2 %>%
 ## 1.
 
 ```{r}
-#| warning = false
 df = read.transactions('Market_Basket_Optimisation.csv', sep = ",")
 ```
 

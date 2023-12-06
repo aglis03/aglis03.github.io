@@ -1,0 +1,62 @@
+---
+title: 'Problem Set #9'
+author: "Annika G. Lee"
+date: "December 1, 2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#| message: false
+rm(list = ls())
+library(tidyverse)
+library(factoextra)
+library(ggthemes)
+```
+
+# Part 1: Segmenting Colleges
+
+```{r}
+#| message: false
+
+scale0 = function(x) {
+  (x - mean(x)) / sd(x)
+}
+
+colleges = read_csv("college.csv") %>%
+  filter(state == "IN") %>%
+  column_to_rownames(var = "name") %>%
+  select(faculty_salary_avg, tuition) %>%
+  mutate_all(.funs = scale0)
+```
+
+## Exercise 1
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+# Part 2: Segmenting the Cereal Market
+
+
+
+
+# Part 3: Segmenting Bathsoap Customers
+
+
+
+
+
+
+

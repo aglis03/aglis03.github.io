@@ -1,0 +1,32 @@
+---
+title: "Final Project"
+author: "Annika G. Lee"
+date: "2023-11-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#| message: false
+rm(list = ls())
+library(tidyverse)
+library(quantmod)
+```
+
+## Including Plots
+
+```{r}
+companies = read_csv("sp500_companies.csv")
+index = read_csv("sp500_index.csv")
+stocks = read_csv("sp500_stocks.csv")
+```
+
+```{r}
+glimpse(df)
+```
+
+```{r}
+SNP <- getSymbols('^GSPC', src='yahoo', auto.assign=FALSE)
+```
+
+

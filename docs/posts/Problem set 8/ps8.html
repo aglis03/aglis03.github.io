@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Annika G. Lee">
+<meta name="dcterms.date" content="2023-12-02">
+
+<title>Annika G. Lee - Problem Set #8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/personal_logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Annika G. Lee</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../resume.html" rel="" target="">
+ <span class="menu-text">Resume</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#part-1" id="toc-part-1" class="nav-link active" data-scroll-target="#part-1">Part 1</a>
+  <ul class="collapse">
+  <li><a href="#question-1" id="toc-question-1" class="nav-link" data-scroll-target="#question-1">Question 1</a></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2">Question 2</a></li>
+  <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3">Question 3</a></li>
+  </ul></li>
+  <li><a href="#part-2" id="toc-part-2" class="nav-link" data-scroll-target="#part-2">Part 2</a>
+  <ul class="collapse">
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">1.</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">2.</a></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">3.</a></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">4.</a></li>
+  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">5.</a></li>
+  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">6.</a></li>
+  <li><a href="#section-6" id="toc-section-6" class="nav-link" data-scroll-target="#section-6">7.</a></li>
+  <li><a href="#section-7" id="toc-section-7" class="nav-link" data-scroll-target="#section-7">8.</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Problem Set #8</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Annika G. Lee </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 2, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="part-1" class="level1">
+<h1>Part 1</h1>
+<section id="question-1" class="level2">
+<h2 class="anchored" data-anchor-id="question-1">Question 1</h2>
+<ol type="a">
+<li><p>Actionable -&gt; Many patients go in for check-ups due to pain and are then typically prescribed medicine. As a result, the hospital could place their pharmacy on the first floor for easier access for patients who have to grab/pick-up their prescriptions, thus avoiding possible instances for more pain to arise.</p></li>
+<li><p>Trivial -&gt; Individuals that come to the hospital with broken bones typically get surgery in order to heal the bone properly. This is common and is dealt with by an orthopedic doctor.</p></li>
+<li><p>Inexplicable -&gt; A big inexplicable event that occurs is cancer. This disorder can develop and affect almost anyone is our society. There is also a variety of forms of cancer, thus making the complete knowledge on all cancer being incomplete. There is no official cure for cancer.</p></li>
+</ol>
+</section>
+<section id="question-2" class="level2">
+<h2 class="anchored" data-anchor-id="question-2">Question 2</h2>
+<p>I grew up in the community of artistic gymnastics. This involvement of mine with this sport began when I was six and now I am 20 and currently an assistant gymnastics coach at my previous high school. An application of association rule that might be useful in gymnastics would be if a gymnast practices the uneven bars then they would need to purchase and own a pair of grips and rolls of tape. Grips are common to use on uneven bars to help gymnast gain better grip on the bar whereas tape is used to help cover any rips of skin that may occur on their hands as they continue to practice.</p>
+</section>
+<section id="question-3" class="level2">
+<h2 class="anchored" data-anchor-id="question-3">Question 3</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>groceries <span class="ot">=</span> <span class="fu">read.transactions</span>(<span class="st">"groceries.csv"</span>, <span class="at">sep =</span> <span class="st">","</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>groceries</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>transactions in sparse format with
+ 9835 transactions (rows) and
+ 169 items (columns)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(groceries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>transactions as itemMatrix in sparse format with
+ 9835 rows (elements/itemsets/transactions) and
+ 169 columns (items) and a density of 0.02609146 
+
+most frequent items:
+      whole milk other vegetables       rolls/buns             soda 
+            2513             1903             1809             1715 
+          yogurt          (Other) 
+            1372            34055 
+
+element (itemset/transaction) length distribution:
+sizes
+   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+2159 1643 1299 1005  855  645  545  438  350  246  182  117   78   77   55   46 
+  17   18   19   20   21   22   23   24   26   27   28   29   32 
+  29   14   14    9   11    4    6    1    1    1    1    3    1 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   2.000   3.000   4.409   6.000  32.000 
+
+includes extended item information - examples:
+            labels
+1 abrasive cleaner
+2 artif. sweetener
+3   baby cosmetics</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>s <span class="ot">=</span> <span class="fu">summary</span>(groceries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sizes <span class="ot">=</span> s<span class="sc">@</span>lengths</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sizes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sizes
+   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+2159 1643 1299 1005  855  645  545  438  350  246  182  117   78   77   55   46 
+  17   18   19   20   21   22   23   24   26   27   28   29   32 
+  29   14   14    9   11    4    6    1    1    1    1    3    1 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>groceries_frequency <span class="ot">=</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Items =</span> <span class="fu">names</span>(<span class="fu">itemFrequency</span>(groceries)),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Frequency =</span> <span class="fu">itemFrequency</span>(groceries)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol type="a">
+<li>The <strong>10 least</strong> frequently purchased items are…</li>
+</ol>
+<!-- -->
+<ol type="1">
+<li>baby food</li>
+<li>sound storage medium</li>
+<li>preservation products</li>
+<li>bags</li>
+<li>kitchen utensil</li>
+<li>baby cosmetics</li>
+<li>frozen chicken</li>
+<li>toilet cleaner</li>
+<li>make up remover</li>
+<li>salad dressing</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>groceries_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Frequency) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   Items                 Frequency
+   &lt;chr&gt;                     &lt;dbl&gt;
+ 1 baby food              0.000102
+ 2 sound storage medium   0.000102
+ 3 preservation products  0.000203
+ 4 bags                   0.000407
+ 5 kitchen utensil        0.000407
+ 6 baby cosmetics         0.000610
+ 7 frozen chicken         0.000610
+ 8 toilet cleaner         0.000712
+ 9 make up remover        0.000813
+10 salad dressing         0.000813</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li>Changing the <strong>minimum rule</strong> length to 3 generates 16 rules. Changing it to 4 generates 0 rules.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>groceryrules <span class="ot">=</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apriori</span>(groceries,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">parameter =</span> <span class="fu">list</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">support =</span> <span class="fl">0.015</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">confidence =</span> <span class="fl">0.25</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">minlen =</span> <span class="dv">3</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>          ) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Apriori
+
+Parameter specification:
+ confidence minval smax arem  aval originalSupport maxtime support minlen
+       0.25    0.1    1 none FALSE            TRUE       5   0.015      3
+ maxlen target  ext
+     10  rules TRUE
+
+Algorithmic control:
+ filter tree heap memopt load sort verbose
+    0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+
+Absolute minimum support count: 147 
+
+set item appearances ...[0 item(s)] done [0.00s].
+set transactions ...[169 item(s), 9835 transaction(s)] done [0.01s].
+sorting and recoding items ... [73 item(s)] done [0.00s].
+creating transaction tree ... done [0.01s].
+checking subsets of size 1 2 3 done [0.00s].
+writing ... [16 rule(s)] done [0.00s].
+creating S4 object  ... done [0.00s].</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(groceryrules)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>set of 16 rules
+
+rule length distribution (lhs + rhs):sizes
+ 3 
+16 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      3       3       3       3       3       3 
+
+summary of quality measures:
+    support          confidence        coverage            lift      
+ Min.   :0.01515   Min.   :0.2704   Min.   :0.02928   Min.   :1.510  
+ 1st Qu.:0.01556   1st Qu.:0.3067   1st Qu.:0.04230   1st Qu.:1.840  
+ Median :0.01749   Median :0.4007   Median :0.04814   Median :2.016  
+ Mean   :0.01865   Mean   :0.3905   Mean   :0.04984   Mean   :2.065  
+ 3rd Qu.:0.02227   3rd Qu.:0.4745   3rd Qu.:0.05618   3rd Qu.:2.212  
+ Max.   :0.02318   Max.   :0.5174   Max.   :0.07483   Max.   :2.842  
+     count      
+ Min.   :149.0  
+ 1st Qu.:153.0  
+ Median :172.0  
+ Mean   :183.4  
+ 3rd Qu.:219.0  
+ Max.   :228.0  
+
+mining info:
+      data ntransactions support confidence
+ groceries          9835   0.015       0.25
+                                                                                        call
+ apriori(data = groceries, parameter = list(support = 0.015, confidence = 0.25, minlen = 3))</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>groceryrules <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(<span class="at">by =</span> <span class="st">"confidence"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lhs                                    rhs                support   
+[1]  {tropical fruit, yogurt}            =&gt; {whole milk}       0.01514997
+[2]  {other vegetables, yogurt}          =&gt; {whole milk}       0.02226741
+[3]  {other vegetables, root vegetables} =&gt; {whole milk}       0.02318251
+[4]  {other vegetables, tropical fruit}  =&gt; {whole milk}       0.01708185
+[5]  {root vegetables, whole milk}       =&gt; {other vegetables} 0.02318251
+[6]  {rolls/buns, yogurt}                =&gt; {whole milk}       0.01555669
+[7]  {other vegetables, rolls/buns}      =&gt; {whole milk}       0.01789527
+[8]  {tropical fruit, whole milk}        =&gt; {other vegetables} 0.01708185
+[9]  {whole milk, yogurt}                =&gt; {other vegetables} 0.02226741
+[10] {tropical fruit, whole milk}        =&gt; {yogurt}           0.01514997
+[11] {rolls/buns, whole milk}            =&gt; {other vegetables} 0.01789527
+[12] {other vegetables, whole milk}      =&gt; {root vegetables}  0.02318251
+[13] {other vegetables, whole milk}      =&gt; {yogurt}           0.02226741
+[14] {whole milk, yogurt}                =&gt; {rolls/buns}       0.01555669
+[15] {rolls/buns, whole milk}            =&gt; {yogurt}           0.01555669
+[16] {whole milk, yogurt}                =&gt; {tropical fruit}   0.01514997
+     confidence coverage   lift     count
+[1]  0.5173611  0.02928317 2.024770 149  
+[2]  0.5128806  0.04341637 2.007235 219  
+[3]  0.4892704  0.04738180 1.914833 228  
+[4]  0.4759207  0.03589222 1.862587 168  
+[5]  0.4740125  0.04890696 2.449770 228  
+[6]  0.4526627  0.03436706 1.771563 153  
+[7]  0.4200477  0.04260295 1.643919 176  
+[8]  0.4038462  0.04229792 2.087140 168  
+[9]  0.3974592  0.05602440 2.054131 219  
+[10] 0.3581731  0.04229792 2.567516 149  
+[11] 0.3159785  0.05663447 1.633026 176  
+[12] 0.3097826  0.07483477 2.842082 228  
+[13] 0.2975543  0.07483477 2.132979 219  
+[14] 0.2776770  0.05602440 1.509648 153  
+[15] 0.2746858  0.05663447 1.969049 153  
+[16] 0.2704174  0.05602440 2.577089 149  </code></pre>
+</div>
+</div>
+<ol start="3" type="a">
+<li>Change the <strong>minimum rule</strong> length back to 2, produce a list of rules involving either <strong>soda</strong> or <strong>whipped/sour cream</strong>.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>groceryrules2 <span class="ot">=</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apriori</span>(groceries,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">parameter =</span> <span class="fu">list</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">support =</span> <span class="fl">0.015</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">confidence =</span> <span class="fl">0.25</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">minlen =</span> <span class="dv">2</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>          ) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Apriori
+
+Parameter specification:
+ confidence minval smax arem  aval originalSupport maxtime support minlen
+       0.25    0.1    1 none FALSE            TRUE       5   0.015      2
+ maxlen target  ext
+     10  rules TRUE
+
+Algorithmic control:
+ filter tree heap memopt load sort verbose
+    0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+
+Absolute minimum support count: 147 
+
+set item appearances ...[0 item(s)] done [0.00s].
+set transactions ...[169 item(s), 9835 transaction(s)] done [0.00s].
+sorting and recoding items ... [73 item(s)] done [0.00s].
+creating transaction tree ... done [0.01s].
+checking subsets of size 1 2 3 done [0.00s].
+writing ... [78 rule(s)] done [0.00s].
+creating S4 object  ... done [0.00s].</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>groceryrules2 <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(<span class="at">by =</span> <span class="st">"confidence"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lhs                                    rhs                support   
+[1]  {tropical fruit, yogurt}            =&gt; {whole milk}       0.01514997
+[2]  {other vegetables, yogurt}          =&gt; {whole milk}       0.02226741
+[3]  {butter}                            =&gt; {whole milk}       0.02755465
+[4]  {curd}                              =&gt; {whole milk}       0.02613116
+[5]  {other vegetables, root vegetables} =&gt; {whole milk}       0.02318251
+[6]  {other vegetables, tropical fruit}  =&gt; {whole milk}       0.01708185
+[7]  {root vegetables, whole milk}       =&gt; {other vegetables} 0.02318251
+[8]  {domestic eggs}                     =&gt; {whole milk}       0.02999492
+[9]  {rolls/buns, yogurt}                =&gt; {whole milk}       0.01555669
+[10] {whipped/sour cream}                =&gt; {whole milk}       0.03223183
+[11] {root vegetables}                   =&gt; {whole milk}       0.04890696
+[12] {sugar}                             =&gt; {whole milk}       0.01504830
+[13] {root vegetables}                   =&gt; {other vegetables} 0.04738180
+[14] {frozen vegetables}                 =&gt; {whole milk}       0.02043721
+[15] {other vegetables, rolls/buns}      =&gt; {whole milk}       0.01789527
+[16] {chicken}                           =&gt; {other vegetables} 0.01789527
+[17] {cream cheese}                      =&gt; {whole milk}       0.01647178
+[18] {margarine}                         =&gt; {whole milk}       0.02419929
+[19] {chicken}                           =&gt; {whole milk}       0.01759024
+[20] {white bread}                       =&gt; {whole milk}       0.01708185
+[21] {beef}                              =&gt; {whole milk}       0.02125064
+[22] {tropical fruit, whole milk}        =&gt; {other vegetables} 0.01708185
+[23] {tropical fruit}                    =&gt; {whole milk}       0.04229792
+[24] {whipped/sour cream}                =&gt; {other vegetables} 0.02887646
+[25] {yogurt}                            =&gt; {whole milk}       0.05602440
+[26] {pip fruit}                         =&gt; {whole milk}       0.03009659
+[27] {whole milk, yogurt}                =&gt; {other vegetables} 0.02226741
+[28] {brown bread}                       =&gt; {whole milk}       0.02521607
+[29] {other vegetables}                  =&gt; {whole milk}       0.07483477
+[30] {pork}                              =&gt; {whole milk}       0.02216573
+[31] {napkins}                           =&gt; {whole milk}       0.01972547
+[32] {beef}                              =&gt; {other vegetables} 0.01972547
+[33] {pork}                              =&gt; {other vegetables} 0.02165735
+[34] {pastry}                            =&gt; {whole milk}       0.03324860
+[35] {frozen vegetables}                 =&gt; {other vegetables} 0.01779359
+[36] {citrus fruit}                      =&gt; {whole milk}       0.03050330
+[37] {fruit/vegetable juice}             =&gt; {whole milk}       0.02663955
+[38] {butter}                            =&gt; {other vegetables} 0.02003050
+[39] {tropical fruit, whole milk}        =&gt; {yogurt}           0.01514997
+[40] {domestic eggs}                     =&gt; {other vegetables} 0.02226741
+[41] {citrus fruit}                      =&gt; {other vegetables} 0.02887646
+[42] {frankfurter}                       =&gt; {whole milk}       0.02053889
+[43] {pip fruit}                         =&gt; {other vegetables} 0.02613116
+[44] {newspapers}                        =&gt; {whole milk}       0.02735130
+[45] {tropical fruit}                    =&gt; {other vegetables} 0.03589222
+[46] {margarine}                         =&gt; {other vegetables} 0.01972547
+[47] {chocolate}                         =&gt; {whole milk}       0.01667514
+[48] {beef}                              =&gt; {root vegetables}  0.01738688
+[49] {frankfurter}                       =&gt; {rolls/buns}       0.01921708
+[50] {sausage}                           =&gt; {rolls/buns}       0.03060498
+[51] {curd}                              =&gt; {yogurt}           0.01728521
+[52] {curd}                              =&gt; {other vegetables} 0.01718353
+[53] {coffee}                            =&gt; {whole milk}       0.01870869
+[54] {sausage}                           =&gt; {whole milk}       0.02989324
+[55] {rolls/buns, whole milk}            =&gt; {other vegetables} 0.01789527
+[56] {yogurt}                            =&gt; {other vegetables} 0.04341637
+[57] {bottled water}                     =&gt; {whole milk}       0.03436706
+[58] {other vegetables, whole milk}      =&gt; {root vegetables}  0.02318251
+[59] {rolls/buns}                        =&gt; {whole milk}       0.05663447
+[60] {other vegetables, whole milk}      =&gt; {yogurt}           0.02226741
+[61] {whole milk}                        =&gt; {other vegetables} 0.07483477
+[62] {fruit/vegetable juice}             =&gt; {other vegetables} 0.02104728
+[63] {whipped/sour cream}                =&gt; {yogurt}           0.02074225
+[64] {brown bread}                       =&gt; {other vegetables} 0.01870869
+[65] {sausage}                           =&gt; {other vegetables} 0.02694459
+[66] {frankfurter}                       =&gt; {other vegetables} 0.01647178
+[67] {tropical fruit}                    =&gt; {yogurt}           0.02928317
+[68] {whole milk, yogurt}                =&gt; {rolls/buns}       0.01555669
+[69] {rolls/buns, whole milk}            =&gt; {yogurt}           0.01555669
+[70] {whole milk, yogurt}                =&gt; {tropical fruit}   0.01514997
+[71] {pip fruit}                         =&gt; {tropical fruit}   0.02043721
+[72] {bottled water}                     =&gt; {soda}             0.02897814
+[73] {citrus fruit}                      =&gt; {yogurt}           0.02165735
+[74] {fruit/vegetable juice}             =&gt; {yogurt}           0.01870869
+[75] {sausage}                           =&gt; {soda}             0.02430097
+[76] {fruit/vegetable juice}             =&gt; {soda}             0.01840366
+[77] {bottled beer}                      =&gt; {whole milk}       0.02043721
+[78] {pastry}                            =&gt; {other vegetables} 0.02257245
+     confidence coverage   lift      count
+[1]  0.5173611  0.02928317 2.0247698 149  
+[2]  0.5128806  0.04341637 2.0072345 219  
+[3]  0.4972477  0.05541434 1.9460530 271  
+[4]  0.4904580  0.05327911 1.9194805 257  
+[5]  0.4892704  0.04738180 1.9148326 228  
+[6]  0.4759207  0.03589222 1.8625865 168  
+[7]  0.4740125  0.04890696 2.4497702 228  
+[8]  0.4727564  0.06344687 1.8502027 295  
+[9]  0.4526627  0.03436706 1.7715630 153  
+[10] 0.4496454  0.07168277 1.7597542 317  
+[11] 0.4486940  0.10899847 1.7560310 481  
+[12] 0.4444444  0.03385867 1.7393996 148  
+[13] 0.4347015  0.10899847 2.2466049 466  
+[14] 0.4249471  0.04809354 1.6630940 201  
+[15] 0.4200477  0.04260295 1.6439194 176  
+[16] 0.4170616  0.04290798 2.1554393 176  
+[17] 0.4153846  0.03965430 1.6256696 162  
+[18] 0.4131944  0.05856634 1.6170980 238  
+[19] 0.4099526  0.04290798 1.6044106 173  
+[20] 0.4057971  0.04209456 1.5881474 168  
+[21] 0.4050388  0.05246568 1.5851795 209  
+[22] 0.4038462  0.04229792 2.0871397 168  
+[23] 0.4031008  0.10493137 1.5775950 416  
+[24] 0.4028369  0.07168277 2.0819237 284  
+[25] 0.4016035  0.13950178 1.5717351 551  
+[26] 0.3978495  0.07564820 1.5570432 296  
+[27] 0.3974592  0.05602440 2.0541308 219  
+[28] 0.3887147  0.06487036 1.5212930 248  
+[29] 0.3867578  0.19349263 1.5136341 736  
+[30] 0.3844797  0.05765125 1.5047187 218  
+[31] 0.3766990  0.05236401 1.4742678 194  
+[32] 0.3759690  0.05246568 1.9430662 194  
+[33] 0.3756614  0.05765125 1.9414764 213  
+[34] 0.3737143  0.08896797 1.4625865 327  
+[35] 0.3699789  0.04809354 1.9121083 175  
+[36] 0.3685504  0.08276563 1.4423768 300  
+[37] 0.3684951  0.07229283 1.4421604 262  
+[38] 0.3614679  0.05541434 1.8681223 197  
+[39] 0.3581731  0.04229792 2.5675162 149  
+[40] 0.3509615  0.06344687 1.8138238 219  
+[41] 0.3488943  0.08276563 1.8031403 284  
+[42] 0.3482759  0.05897306 1.3630295 202  
+[43] 0.3454301  0.07564820 1.7852365 257  
+[44] 0.3426752  0.07981698 1.3411103 269  
+[45] 0.3420543  0.10493137 1.7677896 353  
+[46] 0.3368056  0.05856634 1.7406635 194  
+[47] 0.3360656  0.04961871 1.3152427 164  
+[48] 0.3313953  0.05246568 3.0403668 171  
+[49] 0.3258621  0.05897306 1.7716161 189  
+[50] 0.3257576  0.09395018 1.7710480 301  
+[51] 0.3244275  0.05327911 2.3256154 170  
+[52] 0.3225191  0.05327911 1.6668288 169  
+[53] 0.3222417  0.05805796 1.2611408 184  
+[54] 0.3181818  0.09395018 1.2452520 294  
+[55] 0.3159785  0.05663447 1.6330258 176  
+[56] 0.3112245  0.13950178 1.6084566 427  
+[57] 0.3109476  0.11052364 1.2169396 338  
+[58] 0.3097826  0.07483477 2.8420820 228  
+[59] 0.3079049  0.18393493 1.2050318 557  
+[60] 0.2975543  0.07483477 2.1329789 219  
+[61] 0.2928770  0.25551601 1.5136341 736  
+[62] 0.2911392  0.07229283 1.5046529 207  
+[63] 0.2893617  0.07168277 2.0742510 204  
+[64] 0.2884013  0.06487036 1.4905025 184  
+[65] 0.2867965  0.09395018 1.4822091 265  
+[66] 0.2793103  0.05897306 1.4435193 162  
+[67] 0.2790698  0.10493137 2.0004746 288  
+[68] 0.2776770  0.05602440 1.5096478 153  
+[69] 0.2746858  0.05663447 1.9690488 153  
+[70] 0.2704174  0.05602440 2.5770885 149  
+[71] 0.2701613  0.07564820 2.5746476 201  
+[72] 0.2621895  0.11052364 1.5035766 285  
+[73] 0.2616708  0.08276563 1.8757521 213  
+[74] 0.2587904  0.07229283 1.8551049 184  
+[75] 0.2586580  0.09395018 1.4833245 239  
+[76] 0.2545710  0.07229283 1.4598869 181  
+[77] 0.2537879  0.08052872 0.9932367 201  
+[78] 0.2537143  0.08896797 1.3112349 222  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>groceryrules2 <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(items <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"soda"</span>, <span class="st">"whipped/sour cream"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                        rhs                support    confidence
+[1] {fruit/vegetable juice} =&gt; {soda}             0.01840366 0.2545710 
+[2] {whipped/sour cream}    =&gt; {yogurt}           0.02074225 0.2893617 
+[3] {whipped/sour cream}    =&gt; {other vegetables} 0.02887646 0.4028369 
+[4] {whipped/sour cream}    =&gt; {whole milk}       0.03223183 0.4496454 
+[5] {sausage}               =&gt; {soda}             0.02430097 0.2586580 
+[6] {bottled water}         =&gt; {soda}             0.02897814 0.2621895 
+    coverage   lift     count
+[1] 0.07229283 1.459887 181  
+[2] 0.07168277 2.074251 204  
+[3] 0.07168277 2.081924 284  
+[4] 0.07168277 1.759754 317  
+[5] 0.09395018 1.483324 239  
+[6] 0.11052364 1.503577 285  </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-2" class="level1">
+<h1>Part 2</h1>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section">1.</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read.transactions</span>(<span class="st">'Market_Basket_Optimisation.csv'</span>, <span class="at">sep =</span> <span class="st">","</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in asMethod(object): removing duplicated items in transactions</code></pre>
+</div>
+</div>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1">2.</h2>
+<p>There are a total of 7501 transactions in the data. There are 119 distinct items in the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>transactions in sparse format with
+ 7501 transactions (rows) and
+ 119 items (columns)</code></pre>
+</div>
+</div>
+</section>
+<section id="section-2" class="level2">
+<h2 class="anchored" data-anchor-id="section-2">3.</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>s <span class="ot">=</span> <span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sizes <span class="ot">=</span> s<span class="sc">@</span>lengths</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sizes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sizes
+   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+1754 1358 1044  816  667  493  391  324  259  139  102   67   40   22   17    4 
+  18   19   20 
+   1    2    1 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sizes, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">lw =</span> <span class="dv">6</span>, <span class="at">col =</span> <span class="st">"aquamarine"</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Transaction Sizes"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"# Items in Transaction"</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Size Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ps8_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="section-3" class="level2">
+<h2 class="anchored" data-anchor-id="section-3">4.</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df_frequency <span class="ot">=</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Items =</span> <span class="fu">names</span>(<span class="fu">itemFrequency</span>(df)),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Frequency =</span> <span class="fu">itemFrequency</span>(df)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The 10 <strong>most</strong> frequent items are…</p>
+<!-- -->
+<ol type="1">
+<li>mineral water</li>
+<li>eggs</li>
+<li>spaghetti</li>
+<li>french fries</li>
+<li>chocolate</li>
+<li>green tea</li>
+<li>milk</li>
+<li>ground beef</li>
+<li>frozen vegetables</li>
+<li>pancakes</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Frequency)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   Items             Frequency
+   &lt;chr&gt;                 &lt;dbl&gt;
+ 1 mineral water        0.238 
+ 2 eggs                 0.180 
+ 3 spaghetti            0.174 
+ 4 french fries         0.171 
+ 5 chocolate            0.164 
+ 6 green tea            0.132 
+ 7 milk                 0.130 
+ 8 ground beef          0.0983
+ 9 frozen vegetables    0.0953
+10 pancakes             0.0951</code></pre>
+</div>
+</div>
+<p>The 10 <strong>least</strong> frequent items are…</p>
+<!-- -->
+<ol type="1">
+<li>water spray</li>
+<li>napkins</li>
+<li>cream</li>
+<li>bramble</li>
+<li>tea</li>
+<li>chutney</li>
+<li>mashed potato</li>
+<li>chocolate bread</li>
+<li>dessert wine</li>
+<li>ketchup</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Frequency) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   Items           Frequency
+   &lt;chr&gt;               &lt;dbl&gt;
+ 1 water spray      0.000400
+ 2 napkins          0.000667
+ 3 cream            0.000933
+ 4 bramble          0.00187 
+ 5 tea              0.00387 
+ 6 chutney          0.00413 
+ 7 mashed potato    0.00413 
+ 8 chocolate bread  0.00427 
+ 9 dessert wine     0.00440 
+10 ketchup          0.00440 </code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level2">
+<h2 class="anchored" data-anchor-id="section-4">5.</h2>
+<p>There is a total of 52 association rules that were generated.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df.rules <span class="ot">=</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apriori</span>(df,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">parameter =</span> <span class="fu">list</span>(</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">support =</span> <span class="fl">0.015</span>,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">confidence =</span> <span class="fl">0.25</span>,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">minlen =</span> <span class="dv">2</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>          ) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Apriori
+
+Parameter specification:
+ confidence minval smax arem  aval originalSupport maxtime support minlen
+       0.25    0.1    1 none FALSE            TRUE       5   0.015      2
+ maxlen target  ext
+     10  rules TRUE
+
+Algorithmic control:
+ filter tree heap memopt load sort verbose
+    0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+
+Absolute minimum support count: 112 
+
+set item appearances ...[0 item(s)] done [0.00s].
+set transactions ...[119 item(s), 7501 transaction(s)] done [0.00s].
+sorting and recoding items ... [62 item(s)] done [0.00s].
+creating transaction tree ... done [0.00s].
+checking subsets of size 1 2 3 done [0.00s].
+writing ... [52 rule(s)] done [0.00s].
+creating S4 object  ... done [0.00s].</code></pre>
+</div>
+</div>
+</section>
+<section id="section-5" class="level2">
+<h2 class="anchored" data-anchor-id="section-5">6.</h2>
+<p>There are 43 rules with a length of 2 items &amp; 9 rules with a length of 3 items, resulting in our total of 52 rules.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df.rules)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>set of 52 rules
+
+rule length distribution (lhs + rhs):sizes
+ 2  3 
+43  9 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.000   2.000   2.000   2.173   2.000   3.000 
+
+summary of quality measures:
+    support          confidence        coverage            lift      
+ Min.   :0.01506   Min.   :0.2506   Min.   :0.03546   Min.   :1.174  
+ 1st Qu.:0.01693   1st Qu.:0.2909   1st Qu.:0.05106   1st Qu.:1.446  
+ Median :0.02020   Median :0.3224   Median :0.06292   Median :1.650  
+ Mean   :0.02467   Mean   :0.3310   Mean   :0.07636   Mean   :1.707  
+ 3rd Qu.:0.02750   3rd Qu.:0.3601   3rd Qu.:0.08719   3rd Qu.:1.829  
+ Max.   :0.05973   Max.   :0.4565   Max.   :0.23837   Max.   :3.292  
+     count      
+ Min.   :113.0  
+ 1st Qu.:127.0  
+ Median :151.5  
+ Mean   :185.0  
+ 3rd Qu.:206.2  
+ Max.   :448.0  
+
+mining info:
+ data ntransactions support confidence
+   df          7501   0.015       0.25
+                                                                                 call
+ apriori(data = df, parameter = list(support = 0.015, confidence = 0.25, minlen = 2))</code></pre>
+</div>
+</div>
+<p>Here are the <strong>top 12</strong> association rules by <strong>confidence</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>df.rules <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(<span class="at">by =</span> <span class="st">"confidence"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lhs                             rhs             support    confidence
+[1]  {soup}                       =&gt; {mineral water} 0.02306359 0.4564644 
+[2]  {milk, spaghetti}            =&gt; {mineral water} 0.01573124 0.4436090 
+[3]  {ground beef, spaghetti}     =&gt; {mineral water} 0.01706439 0.4353741 
+[4]  {olive oil}                  =&gt; {mineral water} 0.02759632 0.4190283 
+[5]  {ground beef, mineral water} =&gt; {spaghetti}     0.01706439 0.4169381 
+[6]  {ground beef}                =&gt; {mineral water} 0.04092788 0.4165536 
+[7]  {chocolate, spaghetti}       =&gt; {mineral water} 0.01586455 0.4047619 
+[8]  {salmon}                     =&gt; {mineral water} 0.01706439 0.4012539 
+[9]  {ground beef}                =&gt; {spaghetti}     0.03919477 0.3989145 
+[10] {cooking oil}                =&gt; {mineral water} 0.02013065 0.3942559 
+[11] {chicken}                    =&gt; {mineral water} 0.02279696 0.3800000 
+[12] {frozen vegetables}          =&gt; {mineral water} 0.03572857 0.3748252 
+     coverage   lift     count
+[1]  0.05052660 1.914955 173  
+[2]  0.03546194 1.861024 118  
+[3]  0.03919477 1.826477 128  
+[4]  0.06585789 1.757904 207  
+[5]  0.04092788 2.394681 128  
+[6]  0.09825357 1.747522 307  
+[7]  0.03919477 1.698053 119  
+[8]  0.04252766 1.683336 128  
+[9]  0.09825357 2.291162 294  
+[10] 0.05105986 1.653978 151  
+[11] 0.05999200 1.594172 171  
+[12] 0.09532062 1.572463 268  </code></pre>
+</div>
+</div>
+<p>Here are the <strong>top 12</strong> association rules by <strong>lift</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df.rules <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(<span class="at">by =</span> <span class="st">"lift"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lhs                             rhs             support    confidence
+[1]  {herb &amp; pepper}              =&gt; {ground beef}   0.01599787 0.3234501 
+[2]  {mineral water, spaghetti}   =&gt; {ground beef}   0.01706439 0.2857143 
+[3]  {ground beef, mineral water} =&gt; {spaghetti}     0.01706439 0.4169381 
+[4]  {soup}                       =&gt; {milk}          0.01519797 0.3007916 
+[5]  {ground beef}                =&gt; {spaghetti}     0.03919477 0.3989145 
+[6]  {mineral water, spaghetti}   =&gt; {milk}          0.01573124 0.2633929 
+[7]  {olive oil}                  =&gt; {spaghetti}     0.02293028 0.3481781 
+[8]  {olive oil}                  =&gt; {milk}          0.01706439 0.2591093 
+[9]  {soup}                       =&gt; {mineral water} 0.02306359 0.4564644 
+[10] {herb &amp; pepper}              =&gt; {spaghetti}     0.01626450 0.3288410 
+[11] {milk, mineral water}        =&gt; {spaghetti}     0.01573124 0.3277778 
+[12] {milk, spaghetti}            =&gt; {mineral water} 0.01573124 0.4436090 
+     coverage   lift     count
+[1]  0.04946007 3.291994 120  
+[2]  0.05972537 2.907928 128  
+[3]  0.04092788 2.394681 128  
+[4]  0.05052660 2.321232 114  
+[5]  0.09825357 2.291162 294  
+[6]  0.05972537 2.032623 118  
+[7]  0.06585789 1.999758 172  
+[8]  0.06585789 1.999567 128  
+[9]  0.05052660 1.914955 173  
+[10] 0.04946007 1.888695 122  
+[11] 0.04799360 1.882589 118  
+[12] 0.03546194 1.861024 118  </code></pre>
+</div>
+</div>
+</section>
+<section id="section-6" class="level2">
+<h2 class="anchored" data-anchor-id="section-6">7.</h2>
+<p>Here are the <strong>top 10</strong> association rules by <strong>lift</strong>, that <strong>do not</strong> include the <strong>6 most frequent items</strong>. We can see that there are only 3 available.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>df.rules <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(<span class="sc">!</span>items <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"mineral water"</span>, <span class="st">"eggs"</span>, <span class="st">"spaghetti"</span>, <span class="st">"french fries"</span>, <span class="st">"chocolate"</span>, <span class="st">"green tea"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(<span class="at">by =</span> <span class="st">"lift"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                rhs           support    confidence coverage   lift    
+[1] {herb &amp; pepper} =&gt; {ground beef} 0.01599787 0.3234501  0.04946007 3.291994
+[2] {soup}          =&gt; {milk}        0.01519797 0.3007916  0.05052660 2.321232
+[3] {olive oil}     =&gt; {milk}        0.01706439 0.2591093  0.06585789 1.999567
+    count
+[1] 120  
+[2] 114  
+[3] 128  </code></pre>
+</div>
+</div>
+</section>
+<section id="section-7" class="level2">
+<h2 class="anchored" data-anchor-id="section-7">8.</h2>
+<p>A couple of rules I found the most interesting were the purchases of shrimp and chocolate, burgers and eggs, and pancakes and spaghetti. All of these combinations are quite uncommon to me for each pair has another purchased item from such a different food group (such as sweet and savory &amp; breakfast and dinner). When it comes to retail context, I think that these items being purchased together were due to the commonness that each item has. Possibly putting common items such as all of these mentioned closer together could possibly result in more convenient grocery store run for customers. If buying shrimp for dinner, purchasing chocolate for dessert is a pretty common thought process. When buying burgers, purchasing eggs to eat the next morning for breakfast could easily be a reason for purchase. Lastly, when buying pancake mix for breakfast, buying spaghetti for dinner later i the day would save additional shopping and prepping later in time. All of these possibly scenarios were just a. few of the possible ones that could occur when relating them back to the retail context.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df.rules <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lhs                             rhs             support    confidence
+[1]  {salmon}                     =&gt; {mineral water} 0.01706439 0.4012539 
+[2]  {honey}                      =&gt; {mineral water} 0.01506466 0.3174157 
+[3]  {herb &amp; pepper}              =&gt; {ground beef}   0.01599787 0.3234501 
+[4]  {herb &amp; pepper}              =&gt; {spaghetti}     0.01626450 0.3288410 
+[5]  {herb &amp; pepper}              =&gt; {mineral water} 0.01706439 0.3450135 
+[6]  {grated cheese}              =&gt; {spaghetti}     0.01653113 0.3155216 
+[7]  {grated cheese}              =&gt; {mineral water} 0.01746434 0.3333333 
+[8]  {soup}                       =&gt; {milk}          0.01519797 0.3007916 
+[9]  {soup}                       =&gt; {mineral water} 0.02306359 0.4564644 
+[10] {cooking oil}                =&gt; {spaghetti}     0.01586455 0.3107050 
+[11] {cooking oil}                =&gt; {mineral water} 0.02013065 0.3942559 
+[12] {whole wheat rice}           =&gt; {mineral water} 0.02013065 0.3439636 
+[13] {turkey}                     =&gt; {eggs}          0.01946407 0.3113006 
+[14] {turkey}                     =&gt; {spaghetti}     0.01653113 0.2643923 
+[15] {turkey}                     =&gt; {mineral water} 0.01919744 0.3070362 
+[16] {chicken}                    =&gt; {spaghetti}     0.01719771 0.2866667 
+[17] {chicken}                    =&gt; {mineral water} 0.02279696 0.3800000 
+[18] {frozen smoothie}            =&gt; {mineral water} 0.02026396 0.3200000 
+[19] {low fat yogurt}             =&gt; {mineral water} 0.02399680 0.3135889 
+[20] {tomatoes}                   =&gt; {spaghetti}     0.02093054 0.3060429 
+[21] {tomatoes}                   =&gt; {mineral water} 0.02439675 0.3567251 
+[22] {olive oil}                  =&gt; {milk}          0.01706439 0.2591093 
+[23] {olive oil}                  =&gt; {spaghetti}     0.02293028 0.3481781 
+[24] {olive oil}                  =&gt; {mineral water} 0.02759632 0.4190283 
+[25] {shrimp}                     =&gt; {chocolate}     0.01799760 0.2518657 
+[26] {shrimp}                     =&gt; {spaghetti}     0.02119717 0.2966418 
+[27] {shrimp}                     =&gt; {mineral water} 0.02359685 0.3302239 
+[28] {cake}                       =&gt; {mineral water} 0.02746300 0.3388158 
+[29] {burgers}                    =&gt; {french fries}  0.02199707 0.2522936 
+[30] {burgers}                    =&gt; {eggs}          0.02879616 0.3302752 
+[31] {burgers}                    =&gt; {mineral water} 0.02439675 0.2798165 
+[32] {pancakes}                   =&gt; {spaghetti}     0.02519664 0.2650771 
+[33] {pancakes}                   =&gt; {mineral water} 0.03372884 0.3548387 
+[34] {frozen vegetables}          =&gt; {spaghetti}     0.02786295 0.2923077 
+[35] {frozen vegetables}          =&gt; {mineral water} 0.03572857 0.3748252 
+[36] {ground beef}                =&gt; {spaghetti}     0.03919477 0.3989145 
+[37] {ground beef}                =&gt; {mineral water} 0.04092788 0.4165536 
+[38] {milk}                       =&gt; {spaghetti}     0.03546194 0.2736626 
+[39] {milk}                       =&gt; {mineral water} 0.04799360 0.3703704 
+[40] {chocolate}                  =&gt; {mineral water} 0.05265965 0.3213995 
+[41] {eggs}                       =&gt; {mineral water} 0.05092654 0.2833828 
+[42] {spaghetti}                  =&gt; {mineral water} 0.05972537 0.3430322 
+[43] {mineral water}              =&gt; {spaghetti}     0.05972537 0.2505593 
+[44] {ground beef, spaghetti}     =&gt; {mineral water} 0.01706439 0.4353741 
+[45] {ground beef, mineral water} =&gt; {spaghetti}     0.01706439 0.4169381 
+[46] {mineral water, spaghetti}   =&gt; {ground beef}   0.01706439 0.2857143 
+[47] {milk, spaghetti}            =&gt; {mineral water} 0.01573124 0.4436090 
+[48] {milk, mineral water}        =&gt; {spaghetti}     0.01573124 0.3277778 
+[49] {mineral water, spaghetti}   =&gt; {milk}          0.01573124 0.2633929 
+[50] {chocolate, spaghetti}       =&gt; {mineral water} 0.01586455 0.4047619 
+[51] {chocolate, mineral water}   =&gt; {spaghetti}     0.01586455 0.3012658 
+[52] {mineral water, spaghetti}   =&gt; {chocolate}     0.01586455 0.2656250 
+     coverage   lift     count
+[1]  0.04252766 1.683336 128  
+[2]  0.04746034 1.331619 113  
+[3]  0.04946007 3.291994 120  
+[4]  0.04946007 1.888695 122  
+[5]  0.04946007 1.447397 128  
+[6]  0.05239301 1.812196 124  
+[7]  0.05239301 1.398397 131  
+[8]  0.05052660 2.321232 114  
+[9]  0.05052660 1.914955 173  
+[10] 0.05105986 1.784531 119  
+[11] 0.05105986 1.653978 151  
+[12] 0.05852553 1.442993 151  
+[13] 0.06252500 1.732245 146  
+[14] 0.06252500 1.518535 124  
+[15] 0.06252500 1.288075 144  
+[16] 0.05999200 1.646468 129  
+[17] 0.05999200 1.594172 171  
+[18] 0.06332489 1.342461 152  
+[19] 0.07652313 1.315565 180  
+[20] 0.06839088 1.757755 157  
+[21] 0.06839088 1.496530 183  
+[22] 0.06585789 1.999567 128  
+[23] 0.06585789 1.999758 172  
+[24] 0.06585789 1.757904 207  
+[25] 0.07145714 1.537221 135  
+[26] 0.07145714 1.703760 159  
+[27] 0.07145714 1.385352 177  
+[28] 0.08105586 1.421397 206  
+[29] 0.08718837 1.476173 165  
+[30] 0.08718837 1.837830 216  
+[31] 0.08718837 1.173883 183  
+[32] 0.09505399 1.522468 189  
+[33] 0.09505399 1.488616 253  
+[34] 0.09532062 1.678867 209  
+[35] 0.09532062 1.572463 268  
+[36] 0.09825357 2.291162 294  
+[37] 0.09825357 1.747522 307  
+[38] 0.12958272 1.571779 266  
+[39] 0.12958272 1.553774 360  
+[40] 0.16384482 1.348332 395  
+[41] 0.17970937 1.188845 382  
+[42] 0.17411012 1.439085 448  
+[43] 0.23836822 1.439085 448  
+[44] 0.03919477 1.826477 128  
+[45] 0.04092788 2.394681 128  
+[46] 0.05972537 2.907928 128  
+[47] 0.03546194 1.861024 118  
+[48] 0.04799360 1.882589 118  
+[49] 0.05972537 2.032623 118  
+[50] 0.03919477 1.698053 119  
+[51] 0.05265965 1.730318 119  
+[52] 0.05972537 1.621199 119  </code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
