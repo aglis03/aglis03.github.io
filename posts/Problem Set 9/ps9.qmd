@@ -263,5 +263,5 @@ bathsoap2 %>%
   group_by(cluster) %>%
   summarise_at(vars(Value, `Total Volume`), funs(mean))
 ```
-We can see that **Cluster 1** has the highest average `Value` and also represents the largest purchasing `Total Volume`. Since these both come from the same cluster, we can assume that cluster 1 is the safest for it has above average total volume and above average value.
+We can see that **Cluster 1** has the highest average `Value` and also represents the largest purchasing `Total Volume`. Since these both come from the same cluster, we can assume that cluster 1 is the safest for it has above average total volume and above average value. 
 
