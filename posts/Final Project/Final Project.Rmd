@@ -1,0 +1,213 @@
+---
+title: "Final Project"
+author: "Annika G. Lee"
+date: "December 15, 2023"
+output: html_document
+---
+
+## Define Business Problem
+
+Our business problem is...
+
+## Three High Quality Questions
+
+1.  ...
+2.  ...
+3.  ...
+
+## Translate Business Problem into an Analytics Problem
+
+...
+
+## How CRISP-DM would apply to the process of providing a Solution?
+
+...
+
+## Prepare Data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#| message: false
+rm(list = ls())
+library(tidyverse)
+library(glmnet)
+library(lubridate)
+library(caret)
+library(dummy)
+library(gamlr)
+library(rmarkdown)
+library(GGally)
+library(rpart)
+library(rpart.plot)
+library(corrplot)
+```
+
+## Read in Data
+
+```{r}
+insurance = read_csv("insurance.csv")
+```
+
+```{r}
+glimpse(insurance)
+```
+
+## Check For Missing Variables
+
+We can see that there are no missing variables within our data. This is a good sign for we do not have to replace any NA's within this dataset.
+
+```{r}
+sapply(insurance, function(x) mean(is.na(x)))
+```
+
+## Turn Variables into Factors
+
+```{r}
+insurance_fct = insurance %>%
+  select(-age, -bmi, -charges) %>%
+  mutate_all(.funs = factor)
+
+insurance_num = insurance %>%
+  select(age, bmi, charges)
+
+insurance = bind_cols(insurance_num, insurance_fct)
+```
+
+## Summary
+
+We can see that...
+
+```{r}
+summary(insurance)
+```
+
+## Correlation
+
+We can see that our numeric values do not have strong correlations with one another, indicating that strong relationships are not present within our dataset. This is a good result to have for we will not have to exclude any features from our dataset.
+
+```{r}
+insurance %>%
+  keep(is.numeric) %>%
+  cor() %>%
+  corrplot::corrplot(., method = "number", type = "lower", number.cex = 0.6, tl.cex = 0.7)
+```
+
+## Histogram
+
+When looking at our Histogram, we seem to have a right-skewed distribution within our model. This means...
+
+```{r}
+insurance %>%
+  ggplot(aes(charges)) +
+  geom_histogram(color = "black", bg = "skyblue") +
+  labs(title = "Distribution of Charges",
+       x = "Charges",
+       y = "Count of patients") +
+  theme_classic()
+```
+
+## Convert Variables into Dummy Variables
+
+```{r}
+insurance_dum = dummy(insurance, int = TRUE)
+insurance_num = insurance %>%
+  keep(is.numeric)
+insurance = bind_cols(insurance_num, insurance_dum)
+rm(insurance_dum, insurance_num)
+```
+
+## Partition Data
+
+```{r}
+#Partition Data
+set.seed(123)
+idx = createDataPartition(insurance$charges, p = 0.7, list = FALSE)
+train = insurance[idx, ]
+test = insurance[-idx, ]
+rm(idx)
+```
+
+## Decision Tree
+
+```{r}
+train_model = train(charges ~ .,
+                   data = train,
+                   method = "rpart",
+                   trControl = trainControl(method = "cv", number = 10),
+                   tuneGrid = expand.grid(cp = seq(0.0, 0.01, 0.0001)),
+                   control = rpart.control(minbucket = 1)
+                   )
+plot(train_model)
+```
+
+```{r}
+library(rpart.plot)
+rpart.plot(train_model$finalModel)
+```
+
+## Feature Importance
+
+When looking at our data, we can see that the most important features are: `smoker_no` being the most iportant, `bmi`, and `age`.
+
+```{r}
+library(iml)
+library(patchwork)
+
+tree_predictor = iml::Predictor$new(train_model,
+                                    data = test,
+                                    y = test$charges)
+
+tree_imp = iml::FeatureImp$new(tree_predictor, loss = "rmse", compare = "ratio")
+plot(tree_imp)
+```
+
+```{r}
+tree_imp$results %>%
+  filter(importance > 1)
+```
+
+## Train New Model
+
+We will develop a new model using those three features we found to have the most important features. This will allow us to...
+
+```{r}
+train_new = dplyr::select(train, smoker_no, bmi, age, charges)
+
+new_tree = caret::train(charges ~ .,
+                        data = train_new,
+                        method = "rpart",
+                        trControl = trainControl(method = "cv", number = 10),
+                        tuneGrid = expand.grid(cp = seq(0.0, 0.01, 0.0001)),
+                        control = rpart.control(minbucket = 1)
+                        )
+plot(new_tree)
+```
+
+```{r}
+rpart.plot(new_tree$finalModel)
+```
+
+## Interpret Error
+
+When looking at our error, we see that our Testing Data has the highest RMSE.
+
+Our Training and Cross-Validation data seem to have very similar RMSE, but our Cross- Validation is a higher.
+
+Looking at this, we can interpret that...
+
+```{r}
+train_error = postResample(predict(new_tree, train), train$charges)[["RMSE"]]
+
+cv_error = min(new_tree$results$RMSE)
+
+test_error = postResample(predict(new_tree, test), test$charges)[["RMSE"]]
+
+data.frame(
+  "Error Source" = c("Training", "Cross-Validation", "Testing"),
+  "RMSE" = c(train_error, cv_error, test_error)
+)
+```
+
+```{r}
+
+```
