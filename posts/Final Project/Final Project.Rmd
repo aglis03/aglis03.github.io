@@ -1,31 +1,31 @@
 ---
 title: "Final Project"
-author: "Annika G. Lee"
+author: "Annika G. Lee & Jeffrey Zhao"
 date: "December 15, 2023"
 output: html_document
 ---
 
 ## Define Business Problem
 
-Our business problem is...
+Our business problem is to develop a predictive model that will help us accurately estimate and predict health insurance charges for individuals based on factors such as age, BMI, gender, number of children, smoking status, and region.
 
 ## Three High Quality Questions
 
-1.  ...
-2.  ...
-3.  ...
+1.  Are the home addresses of these patients also being included and used as a factor to determine predictions of charges in the datatset?
+2.  What strategies can we develop to offer customer insurance that is best tailored to their needs based on their unique characteristics and environment?
+3.  Will we be taking different kinds of health insurance plans into consideration when making predictions on charges? Income value, career, etc, can a play a big role to which coverage is granted to patients and their families.
 
 ## Translate Business Problem into an Analytics Problem
 
-...
+We can attempt to develop a regression based predictive model. The objective would be to build and train a model that accurately predicts health insurance charges. One approach is to utilize a dataset that contains these factors. Our main goal would be to minimize the predictive error and find predictions using such interpretations of error from a model.
 
 ## How CRISP-DM would apply to the process of providing a Solution?
 
-...
+CRISP-DM is used as a framework for data mining projects and has 6 steps. The first step is business understanding. We have to first identify what our objectives are and what constitutes our model as being successful. The next step is data understanding. We have to explore the dataset and see if there are any relationships between factors. The third step is data preparation. In this step we check for missing variables, and convert variables into factors. The fourth step is about modeling. In this step we split the data set into training and testing sets. Next we train the model. The fifth step is about evaluation. We have to evaluate how our model performed by looking at its accuracy and error. The final step is deployment. Once we are satisfied with our model, we use the model on new, unseen data.
 
 ## Prepare Data
 
-```{r setup, include=FALSE}
+```{r}
 knitr::opts_chunk$set(echo = TRUE)
 #| message: false
 rm(list = ls())
@@ -75,7 +75,7 @@ insurance = bind_cols(insurance_num, insurance_fct)
 
 ## Summary
 
-We can see that...
+We can see that the \*\*minimum&& `age` within this dataset is 18. This makes sense for minors cannot purchase health insurance on their own. We can also see that the **median** `age` is 39 years old. One thing we notice is that the **mean** and **median** for `bmi` are both around 30, which goes into the obesity category. This could be a big factor in health insurance costs. One of the most important parts of the data are `charges`. We see that the **minimum** amount of `charges` for health insurance is \$1,122, and the **median** amout of `charges` for health insurance is \$9,382. The max amount of charges for health insurance is \$63,770. This is a big **discrepancy** that may come into play.
 
 ```{r}
 summary(insurance)
@@ -94,7 +94,7 @@ insurance %>%
 
 ## Histogram
 
-When looking at our Histogram, we seem to have a right-skewed distribution within our model. This means...
+When looking at our Histogram for **Distribution of Charges**, we seem to have a right-skewed distribution within our model. This helps us visually see that a large amount of patients in this dataset have amount of `charges` below the **median** of the feature. We can easily see that many patients have lower amounts than higher amounts when it comes to `charges` for their health insurance.
 
 ```{r}
 insurance %>%
@@ -147,7 +147,7 @@ rpart.plot(train_model$finalModel)
 
 ## Feature Importance
 
-When looking at our data, we can see that the most important features are: `smoker_no` being the most iportant, `bmi`, and `age`.
+When looking at our data, we can see that the most important features are: `smoker_no` being the most important, `bmi`, and `age`. All other features seem to not have much of an importance within our dataset.
 
 ```{r}
 library(iml)
@@ -168,7 +168,7 @@ tree_imp$results %>%
 
 ## Train New Model
 
-We will develop a new model using those three features we found to have the most important features. This will allow us to...
+We will develop a new model using those three features we found to have the most important features. This will allow us to focus our new trained model on key factors that significantly affect health insurance charges. By focusing on only the most impactful variables, we can improve the predictive performance and possibly decrease the amount of error that may have been present earlier in our model.
 
 ```{r}
 train_new = dplyr::select(train, smoker_no, bmi, age, charges)
@@ -191,9 +191,11 @@ rpart.plot(new_tree$finalModel)
 
 When looking at our error, we see that our Testing Data has the highest RMSE.
 
-Our Training and Cross-Validation data seem to have very similar RMSE, but our Cross- Validation is a higher.
+Our Training and Cross-Validation data seem to have very similar RMSE, but our Training has the smallest amount of RMSE present.
 
-Looking at this, we can interpret that...
+When looking at this, it makes sense for our Testing to have the highest RMSE present and for our Training to the smallest. The Testing data being used with our developed model was not trained to fit our model like our Training data. A similar RMSE between Training and Cross-Validation means that the model is fitting well to the Training data.
+
+Our Testing data is a measure of how well the fitted model will predict, not how well it fits data that was used to train the model.
 
 ```{r}
 train_error = postResample(predict(new_tree, train), train$charges)[["RMSE"]]
@@ -208,6 +210,6 @@ data.frame(
 )
 ```
 
-```{r}
+## Conclusion
 
-```
+In conclusion, our project sought to develop a predictive model for estimating health insurance charges based on factors such as demographics and lifestyle. We used the CRISP-DM for the machine learning process as a way to guide our project. Our findings lead us to reveal that the factors that influence health insurance charges the most are `age`, `BMI`, and `smoking status`. However, we found out that the model's performance on testing data had challenges we needed to look into. We found out valuable insight into the decision making process involved in estimating health care charges.
